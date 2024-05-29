@@ -27,6 +27,24 @@ const Display = (props) => {
   );
 };
 
+const Statistics = (props) => {
+  return (
+    <>
+      <Display text="all" score={props.good + props.neutral + props.bad} />
+      <Display
+        text="average"
+        score={
+          (props.good - props.bad) / (props.good + props.neutral + props.bad)
+        }
+      />
+      <Display
+        text="positive"
+        score={props.good / (props.good + props.neutral + props.bad)}
+      />
+    </>
+  );
+};
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
@@ -50,9 +68,7 @@ const App = () => {
       <Display text="good" score={good} />
       <Display text="neutral" score={neutral} />
       <Display text="bad" score={bad} />
-      <Display text="all" score={good + neutral + bad} />
-      <Display text="average" score={(good - bad) / (good + neutral + bad)} />
-      <Display text="positive" score={good / (good + neutral + bad)} />
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
 };
