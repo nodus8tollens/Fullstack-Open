@@ -28,21 +28,29 @@ const Display = (props) => {
 };
 
 const Statistics = (props) => {
-  return (
-    <>
-      <Display text="all" score={props.good + props.neutral + props.bad} />
-      <Display
-        text="average"
-        score={
-          (props.good - props.bad) / (props.good + props.neutral + props.bad)
-        }
-      />
-      <Display
-        text="positive"
-        score={props.good / (props.good + props.neutral + props.bad)}
-      />
-    </>
-  );
+  if (props.good === 0 && props.neutral === 0 && props.bad === 0) {
+    return (
+      <>
+        <p>No feedback given</p>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Display text="all" score={props.good + props.neutral + props.bad} />
+        <Display
+          text="average"
+          score={
+            (props.good - props.bad) / (props.good + props.neutral + props.bad)
+          }
+        />
+        <Display
+          text="positive"
+          score={props.good / (props.good + props.neutral + props.bad)}
+        />
+      </>
+    );
+  }
 };
 
 const App = () => {
