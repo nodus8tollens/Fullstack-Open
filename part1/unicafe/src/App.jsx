@@ -37,6 +37,9 @@ const Statistics = (props) => {
   } else {
     return (
       <>
+        <Display text="good" score={props.good} />
+        <Display text="neutral" score={props.neutral} />
+        <Display text="bad" score={props.bad} />
         <Display text="all" score={props.good + props.neutral + props.bad} />
         <Display
           text="average"
@@ -51,6 +54,10 @@ const Statistics = (props) => {
       </>
     );
   }
+};
+
+const StatisticLine = (props) => {
+  return <></>;
 };
 
 const App = () => {
@@ -73,9 +80,7 @@ const App = () => {
       />
       <Button text="bad" handleClick={handleButtonClick(bad, setBad)} />
       <Header text="statistics" />
-      <Display text="good" score={good} />
-      <Display text="neutral" score={neutral} />
-      <Display text="bad" score={bad} />
+
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
