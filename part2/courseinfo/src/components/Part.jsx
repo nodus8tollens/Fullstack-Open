@@ -2,6 +2,7 @@
 const Part = ({ name, exercises }) => {
   return (
     <>
+      <br />
       <p>
         {name} {exercises}
       </p>

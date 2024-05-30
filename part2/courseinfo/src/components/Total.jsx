@@ -7,9 +7,11 @@ const Total = ({ parts }) => {
 
   return (
     <>
+      <br />
       <p>
         <b>total of {sum} exercises</b>
       </p>
+      <br />
     </>
   );
 };
