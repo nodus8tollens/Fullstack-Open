@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 const Total = ({ parts }) => {
-  let sum = 0;
-  parts.forEach((part) => {
-    sum = sum + part.exercises;
-  });
+  const sum = parts.reduce((accumulator, currentValue) => {
+    console.log(currentValue.exercises);
+    return accumulator + currentValue.exercises;
+  }, 0);
+
   return (
     <>
       <p>
