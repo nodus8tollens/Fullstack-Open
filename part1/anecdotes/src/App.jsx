@@ -1,4 +1,41 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
+
+const DisplayVotes = ({ anecdotes, points }) => {
+  const mostVotedAnecdote = () => {
+    return points.indexOf(Math.max(...points));
+  };
+
+  const mostVotedIndex = mostVotedAnecdote();
+
+  if (Math.max(...points) === 0) {
+    return <div>No available data.</div>;
+  } else {
+    return (
+      <>
+        <div>{anecdotes[mostVotedIndex]}</div>
+        <div>has {points[mostVotedIndex]} votes.</div>
+      </>
+    );
+  }
+};
+
+const DisplayAnecdote = ({ anecdotes, selected }) => {
+  return (
+    <>
+      <h1>Anecdote of the day</h1>
+      <div>{anecdotes[selected]}</div>
+    </>
+  );
+};
+
+const Button = ({ handleClick, text }) => {
+  return (
+    <>
+      <button onClick={handleClick}>{text}</button>
+    </>
+  );
+};
 
 const App = () => {
   const anecdotes = [
@@ -13,40 +50,31 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
-  const [points, setPoints] = useState({
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 0,
-  });
+  const [points, setPoints] = useState(new Array(anecdotes.length).fill(0));
 
   const handleRandomClick = () => {
     let rnd;
     do {
       rnd = Math.floor(Math.random() * anecdotes.length);
     } while (rnd === selected);
-    console.log(rnd);
     setSelected(rnd);
   };
 
   const handleVoteClick = () => {
-    const copy = { ...points };
-    console.log(copy);
+    const copy = [...points];
     copy[selected] += 1;
     setPoints(copy);
   };
 
   return (
     <>
-      <div>{anecdotes[selected]}</div>
+      <DisplayAnecdote anecdotes={anecdotes} selected={selected} />
 
-      <button onClick={handleVoteClick}>vote</button>
+      <Button handleClick={handleVoteClick} text={"vote"}></Button>
+      <Button handleClick={handleRandomClick} text={"next anecdote"}></Button>
 
-      <button onClick={handleRandomClick}>next anecdote</button>
+      <h1>Anecdote with most votes</h1>
+      <DisplayVotes anecdotes={anecdotes} points={points} />
     </>
   );
 };
