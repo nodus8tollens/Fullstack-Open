@@ -17,7 +17,7 @@ const Button = (props) => {
   );
 };
 
-const Display = (props) => {
+const StatisticLine = (props) => {
   return (
     <>
       <p>
@@ -37,27 +37,66 @@ const Statistics = (props) => {
   } else {
     return (
       <>
-        <Display text="good" score={props.good} />
-        <Display text="neutral" score={props.neutral} />
-        <Display text="bad" score={props.bad} />
-        <Display text="all" score={props.good + props.neutral + props.bad} />
-        <Display
-          text="average"
-          score={
-            (props.good - props.bad) / (props.good + props.neutral + props.bad)
-          }
-        />
-        <Display
-          text="positive"
-          score={props.good / (props.good + props.neutral + props.bad)}
-        />
+        <table>
+          <tr>
+            <td>
+              <StatisticLine text="good" />
+            </td>
+            <td>
+              <StatisticLine score={props.good} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="neutral" />
+            </td>
+            <td>
+              <StatisticLine score={props.neutral} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="bad" />
+            </td>
+            <td>
+              <StatisticLine score={props.bad} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="all" />
+            </td>
+            <td>
+              <StatisticLine score={props.good + props.neutral + props.bad} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="average" />
+            </td>
+            <td>
+              <StatisticLine
+                score={
+                  (props.good - props.bad) /
+                  (props.good + props.neutral + props.bad)
+                }
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <StatisticLine text="positive" />
+            </td>
+            <td>
+              <StatisticLine
+                score={props.good / (props.good + props.neutral + props.bad)}
+              />
+            </td>
+          </tr>
+        </table>
       </>
     );
   }
-};
-
-const StatisticLine = (props) => {
-  return <></>;
 };
 
 const App = () => {
