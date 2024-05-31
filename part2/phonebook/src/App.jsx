@@ -2,16 +2,26 @@ import { useState } from "react";
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "00-300-200-1", id: 0 },
+    { name: "Arto Hellas", number: "040-123456", id: 1 },
+    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
+    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
+    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [filter, setFilter] = useState("");
+  const [filteredPersons, setFilteredPersons] = useState([]);
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
+  };
+
+  const handleFilter = (event) => {
+    setFilter(event.target.value);
+    setFilteredPersons(filterPersons(filter));
   };
 
   const addPerson = (event) => {
@@ -33,9 +43,27 @@ const App = () => {
     console.log("submit");
   };
 
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return string;
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const filterPersons = (filter) => {
+    if (!filter) return persons;
+    const capitalizedFilter = capitalizeFirstLetter(filter);
+    return persons.filter((person) =>
+      person.name.toLowerCase().startsWith(capitalizedFilter.toLowerCase())
+    );
+  };
+
+  const personsToShow = filter ? filterPersons(filter) : persons;
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with <input onChange={handleFilter} />
+      </div>
       <form onSubmit={addPerson}>
         <div>
           name: <input value={newName} onChange={handleNameChange} />
@@ -49,7 +77,7 @@ const App = () => {
       </form>
       <div>
         <h2>Numbers</h2>
-        {persons.map((person) => {
+        {personsToShow.map((person) => {
           return (
             <p key={person.id}>
               {person.name} {person.number}
@@ -59,7 +87,7 @@ const App = () => {
       </div>
       ...
       <div>
-        debug: {newName} {newNumber}
+        debug: {newName} {newNumber} {filter}
       </div>
     </div>
   );
