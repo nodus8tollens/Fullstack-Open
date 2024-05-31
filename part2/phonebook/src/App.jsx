@@ -10,7 +10,6 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
-  const [filteredPersons, setFilteredPersons] = useState([]);
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -21,7 +20,6 @@ const App = () => {
 
   const handleFilter = (event) => {
     setFilter(event.target.value);
-    setFilteredPersons(filterPersons(filter));
   };
 
   const addPerson = (event) => {
