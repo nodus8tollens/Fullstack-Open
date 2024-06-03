@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 import numbersService from "./services/numbers";
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState("");
 
   useEffect(() => {
     numbersService.getPersons().then((initialPersons) => {
@@ -44,6 +46,8 @@ const App = () => {
                 person.id !== foundPerson.id ? person : updatedPerson
               )
             );
+            setNewName("");
+            setNewNumber("");
           })
           .catch((error) => {
             console.error("Error updating person:", error);
@@ -59,6 +63,11 @@ const App = () => {
         .setPerson(personObject)
         .then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson));
+          setNotificationMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+
           setNewName("");
           setNewNumber("");
         })
@@ -100,6 +109,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification notificationMessage={notificationMessage} />
       <Filter handleFilter={handleFilterChange} />
       <h3>Add a new contact</h3>
       <PersonForm
