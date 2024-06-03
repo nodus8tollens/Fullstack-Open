@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:3001/persons/";
+const baseUrl = "http://localhost:3001/persons";
 
 const getPersons = () => {
   const request = axios.get(baseUrl);
@@ -12,4 +12,15 @@ const setPerson = (newPerson) => {
   return request.then((response) => response.data);
 };
 
-export default { getPersons, setPerson };
+const deletePerson = (id) => {
+  const deleteUrl = `${baseUrl}/${id}`;
+  const request = axios.delete(deleteUrl);
+  return request
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error in deletePerson:", error);
+      throw error;
+    });
+};
+
+export default { baseUrl, getPersons, setPerson, deletePerson };

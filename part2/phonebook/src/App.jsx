@@ -22,8 +22,7 @@ const App = () => {
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
   };
-
-  const handleFilter = (event) => {
+  const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
 
@@ -36,7 +35,6 @@ const App = () => {
       const personObject = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1,
       };
 
       numbersService.setPerson(personObject).then((returnedPerson) => {
@@ -62,10 +60,24 @@ const App = () => {
 
   const personsToShow = filter ? filterPersons(filter) : persons;
 
+  const deletePerson = (id) => {
+    const personToDelete = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete contact for ${personToDelete.name}?`)) {
+      numbersService
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id));
+        })
+        .catch((error) => {
+          console.error("Error deleting person:", error);
+        });
+    }
+  };
+
   return (
     <div>
       <h1>Phonebook</h1>
-      <Filter handleFilter={handleFilter} />
+      <Filter handleFilter={handleFilterChange} />
       <h3>Add a new contact</h3>
       <PersonForm
         addPerson={addPerson}
@@ -75,8 +87,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons personsToShow={personsToShow} />
-      ...
+      <Persons personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
   );
 };
