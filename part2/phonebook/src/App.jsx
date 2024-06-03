@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import numbersService from "./services/numbers";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,9 +11,8 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      const data = response.data;
-      setPersons(data);
+    numbersService.getPersons().then((initialPersons) => {
+      setPersons(initialPersons);
     });
   }, []);
 
@@ -39,12 +38,13 @@ const App = () => {
         number: newNumber,
         id: persons.length + 1,
       };
-      setPersons(persons.concat(personObject));
-      setNewName("");
-      setNewNumber("");
-    }
 
-    console.log("submit");
+      numbersService.setPerson(personObject).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+      });
+    }
   };
 
   const capitalizeFirstLetter = (string) => {
