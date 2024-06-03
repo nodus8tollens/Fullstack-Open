@@ -46,10 +46,25 @@ const App = () => {
                 person.id !== foundPerson.id ? person : updatedPerson
               )
             );
+            setNotificationMessage({
+              message: `Updated contact for ${foundPerson.name}`,
+              error: false,
+            });
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 5000);
             setNewName("");
             setNewNumber("");
           })
           .catch((error) => {
+            setNotificationMessage({
+              message: `Error updating contact for ${foundPerson.name}`,
+              error: true,
+            });
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 5000);
+
             console.error("Error updating person:", error);
           });
       }
@@ -63,7 +78,10 @@ const App = () => {
         .setPerson(personObject)
         .then((returnedPerson) => {
           setPersons(persons.concat(returnedPerson));
-          setNotificationMessage(`Added ${newName}`);
+          setNotificationMessage({
+            message: `Added contact for ${personObject.name}`,
+            error: false,
+          });
           setTimeout(() => {
             setNotificationMessage(null);
           }, 5000);
@@ -73,6 +91,13 @@ const App = () => {
         })
         .catch((error) => {
           console.error("Error adding person:", error);
+          setNotificationMessage({
+            message: `Error in creating contact for ${personObject.name}`,
+            error: true,
+          });
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
         });
     }
   };
@@ -99,9 +124,23 @@ const App = () => {
         .deletePerson(id)
         .then(() => {
           setPersons(persons.filter((person) => person.id !== id));
+          setNotificationMessage({
+            message: `Deleted contact for ${personToDelete.name}`,
+            error: false,
+          });
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
         })
         .catch((error) => {
           console.error("Error deleting person:", error);
+          setNotificationMessage({
+            message: `Error deleting contact for ${personToDelete.name}`,
+            error: true,
+          });
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
         });
     }
   };

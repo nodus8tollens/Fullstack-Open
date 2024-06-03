@@ -1,14 +1,18 @@
 /* eslint-disable react/prop-types */
-const Notification = (props) => {
-  const style = {
-    display: props.notificationMessage ? "block" : "none",
+const Notification = ({ notificationMessage }) => {
+  if (!notificationMessage) return null;
+
+  const notificationStyle = {
+    color: notificationMessage.error ? "red" : "green",
+    background: "lightgrey",
+    fontSize: "20px",
+    border: "solid",
+    borderRadius: "5px",
+    padding: "10px",
+    marginBottom: "10px",
   };
 
-  return (
-    <div className="message" style={style}>
-      {props.notificationMessage}
-    </div>
-  );
+  return <div style={notificationStyle}>{notificationMessage.message}</div>;
 };
 
 export default Notification;
