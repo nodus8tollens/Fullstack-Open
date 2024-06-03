@@ -30,18 +30,41 @@ const App = () => {
     event.preventDefault();
 
     if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const foundPerson = persons.find((person) => person.name === newName);
+        numbersService
+          .updatePerson(foundPerson, newNumber)
+          .then((updatedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== foundPerson.id ? person : updatedPerson
+              )
+            );
+          })
+          .catch((error) => {
+            console.error("Error updating person:", error);
+          });
+      }
     } else {
       const personObject = {
         name: newName,
         number: newNumber,
       };
 
-      numbersService.setPerson(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
-      });
+      numbersService
+        .setPerson(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          console.error("Error adding person:", error);
+        });
     }
   };
 
