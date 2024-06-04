@@ -12,9 +12,16 @@ const Results = (props) => {
         <Display country={props.countries[0]} />
       ) : (
         <ul>
-          {props.countries.map((country) => {
-            return <li key={country.cca3}>{country.name.common}</li>;
-          })}
+          {props.countries.map((country) => (
+            <div>
+              <li style={{ display: "inline-block" }} key={country.cca3}>
+                {country.name.common}
+              </li>
+              <button style={{ display: "inline-block" }} key={country.cca3}>
+                show
+              </button>
+            </div>
+          ))}
         </ul>
       )}
     </>
