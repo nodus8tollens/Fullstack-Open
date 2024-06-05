@@ -12,6 +12,7 @@ const getCountry = (searchString) => {
           .toLowerCase()
           .includes(searchString.toLowerCase());
       });
+      console.log(filteredCountries);
       return filteredCountries;
     })
     .catch((error) => {

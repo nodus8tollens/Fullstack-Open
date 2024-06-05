@@ -28,7 +28,6 @@ function App() {
   const handleButtonClick = (country) => {
     setShowDisplay(true);
     setSelectedCountry(country);
-    setSearchString("");
   };
 
   return (
