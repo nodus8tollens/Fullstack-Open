@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
-const Search = (props) => {
+const Search = ({ handleSearchChange }) => {
   return (
     <>
       <label htmlFor="countries">Search for a country: </label>
-      <input onChange={props.handleSearchChange} type="text" name="countries" />
+      <input onChange={handleSearchChange} type="text" name="countries" />
       <p></p>
     </>
   );

@@ -1,23 +1,21 @@
-const Display = (props) => {
-  for (let key in props.country.languages) {
-    console.log(key, props.country.languages[key]);
-  }
+/* eslint-disable react/prop-types */
+const Display = ({ country }) => {
   return (
     <>
-      <h1>{props.country.name.common}</h1>
-      <p>capital {props.country.capital}</p>
-      <p>area {props.country.area}</p>
+      <h1>{country.name.common}</h1>
+      <p>Capital: {country.capital}</p>
+      <p>Area: {country.area} km²</p>
       <br />
       <p>
-        <b>languages</b>
+        <b>Languages:</b>
       </p>
       <ul>
-        {Object.keys(props.country.languages).map((languageCode) => (
-          <li key={languageCode}>{props.country.languages[languageCode]}</li>
+        {Object.values(country.languages).map((language, index) => (
+          <li key={index}>{language}</li>
         ))}
       </ul>
       <br />
-      <img src={props.country.flags.png} alt={props.country.flags.alt} />
+      <img src={country.flags.png} alt={country.flags.alt} />
     </>
   );
 };
