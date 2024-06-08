@@ -1,1 +1,1 @@
-https://fullstack-open-vuoh.onrender.com/api/persons
+https://fullstack-open-vuoh.onrender.com/
