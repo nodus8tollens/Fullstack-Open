@@ -52,10 +52,10 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.put("/api/persons/:id", (request, response) => {
   const { name, number } = req.body;
-
-  Person.findByIdAndUpdate(request.params.id, { name, number }).then(
-    (updatedPerson) => response.json(updatedPerson)
-  );
+  const id = Number(request.params.id);
+  Person.findByIdAndUpdate(id, { name, number })
+    .then((updatedPerson) => response.json(updatedPerson))
+    .catch((error) => console.log("PUT Error: ", error));
 });
 
 app.delete("/api/persons/:id", (request, response) => {
