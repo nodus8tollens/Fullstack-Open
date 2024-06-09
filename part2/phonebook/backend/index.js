@@ -52,8 +52,8 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.put("/api/persons/:id", (request, response) => {
   const { name, number } = request.body;
-  const id = Number(request.params.id);
-  Person.findByIdAndUpdate(id, { name, number })
+
+  Person.findByIdAndUpdate(request.params.id, { name, number })
     .then((updatedPerson) => response.json(updatedPerson))
     .catch((error) => console.log("PUT Error: ", error));
 });
