@@ -35,6 +35,15 @@ app.post("/api/persons", (request, response) => {
   if (body.name === undefined) {
     return response.status(400).json({ error: "name missing" });
   }
+
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
+
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
