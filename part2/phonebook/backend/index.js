@@ -51,7 +51,7 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.put("/api/persons/:id", (request, response) => {
-  const { name, number } = req.body;
+  const { name, number } = request.body;
   const id = Number(request.params.id);
   Person.findByIdAndUpdate(id, { name, number })
     .then((updatedPerson) => response.json(updatedPerson))
