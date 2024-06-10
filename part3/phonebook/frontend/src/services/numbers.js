@@ -17,6 +17,7 @@ const updatePerson = (foundPerson, newNumber) => {
     ...foundPerson,
     number: newNumber,
   });
+
   return request.then((response) => response.data);
 };
 

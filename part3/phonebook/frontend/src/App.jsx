@@ -43,15 +43,13 @@ const App = () => {
         numbersService
           .updatePerson(foundPerson, newNumber)
           .then((updatedPerson) => {
-            console.log("updated person response:", updatedPerson);
-
             const updatedPersons = persons.map((person) =>
-              person.id !== foundPerson.id ? person : updatedPerson
+              person.id !== foundPerson.id
+                ? person
+                : { ...updatedPerson, number: newNumber }
             );
 
             setPersons(updatedPersons);
-
-            console.log("persons: ", persons);
 
             setNotificationMessage({
               message: `Updated contact for ${foundPerson.name}`,
