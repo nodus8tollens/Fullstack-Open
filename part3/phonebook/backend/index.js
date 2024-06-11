@@ -17,8 +17,8 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-morgan.token("body", function (req, res) {
-  return JSON.stringify(req.body);
+morgan.token("body", function (request, response) {
+  return JSON.stringify(request.body);
 });
 
 app.use(cors());
