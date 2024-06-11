@@ -50,7 +50,6 @@ const App = () => {
             );
 
             setPersons(updatedPersons);
-
             setNotificationMessage({
               message: `Updated contact for ${foundPerson.name}`,
               error: false,
@@ -65,7 +64,7 @@ const App = () => {
           })
           .catch((error) => {
             setNotificationMessage({
-              message: `Error updating contact for ${foundPerson.name}`,
+              message: error.response.data.error,
               error: true,
             });
             setTimeout(() => {
@@ -76,10 +75,7 @@ const App = () => {
           });
       }
     } else {
-      const personObject = {
-        name: newName,
-        number: newNumber,
-      };
+      const personObject = { name: newName, number: newNumber };
 
       numbersService
         .setPerson(personObject)
@@ -89,6 +85,7 @@ const App = () => {
             message: `Added contact for ${personObject.name}`,
             error: false,
           });
+
           setTimeout(() => {
             setNotificationMessage(null);
           }, 5000);
@@ -99,7 +96,7 @@ const App = () => {
         .catch((error) => {
           console.error("Error adding person:", error);
           setNotificationMessage({
-            message: `Error in creating contact for ${personObject.name}`,
+            message: error.response.data.error,
             error: true,
           });
           setTimeout(() => {

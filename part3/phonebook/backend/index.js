@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 3001;
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
+  if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  }
 
   next(error);
 };
@@ -66,7 +69,11 @@ app.get("/api/persons/:id", (request, response, next) => {
 app.put("/api/persons/:id", (request, response, next) => {
   const { name, number } = request.body;
 
-  Person.findByIdAndUpdate(request.params.id, { name, number })
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { runValidators: true }
+  )
     .then((updatedPerson) => response.json(updatedPerson))
     .catch((error) => next(error));
 });
