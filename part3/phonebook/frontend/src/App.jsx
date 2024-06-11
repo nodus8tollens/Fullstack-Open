@@ -137,9 +137,9 @@ const App = () => {
           }, 5000);
         })
         .catch((error) => {
-          console.error("Error deleting person:", error);
+          console.error("Error deleting person:", error.response.data.error);
           setNotificationMessage({
-            message: `Error deleting contact for ${personToDelete.name}`,
+            message: error.response.data.error,
             error: true,
           });
           setTimeout(() => {
