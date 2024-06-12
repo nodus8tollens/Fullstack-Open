@@ -12,4 +12,22 @@ const favoriteBlog = (blogs) => {
   }, blogs[0]);
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog };
+const _ = require("lodash");
+
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return null;
+
+  const authorBlogCounts = _.countBy(blogs, "author");
+
+  const topAuthor = _.maxBy(
+    Object.keys(authorBlogCounts),
+    (author) => authorBlogCounts[author]
+  );
+
+  return {
+    author: topAuthor,
+    blogs: authorBlogCounts[topAuthor],
+  };
+};
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs };
