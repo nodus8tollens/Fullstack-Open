@@ -179,6 +179,81 @@ test("delete one post", async () => {
   );
 });
 
+test("update one post", async () => {
+  const updateBlogPost = {
+    _id: "5a422aa71b54a676234d17f1",
+    title: "Updated Title",
+    author: "Test Man",
+    url: "https://cleancoder.com/files/CleanCodeSample.pdf",
+    likes: 10,
+    __v: 0,
+  };
+
+  await api
+    .put(`/api/blogs/${updateBlogPost._id}`)
+    .send(updateBlogPost)
+    .expect(200);
+
+  const response = await api.get(`/api/blogs/${updateBlogPost._id}`);
+
+  assert.strictEqual(
+    response.body.title,
+    updateBlogPost.title,
+    "Title was not updated correctly"
+  );
+  assert.strictEqual(
+    response.body.author,
+    updateBlogPost.author,
+    "Author was not updated correctly"
+  );
+  assert.strictEqual(
+    response.body.url,
+    updateBlogPost.url,
+    "URL was not updated correctly"
+  );
+  assert.strictEqual(
+    response.body.likes,
+    updateBlogPost.likes,
+    "Likes were not updated correctly"
+  );
+});
+
+test("update one post; compare whole objects", async () => {
+  const updateBlogPost = {
+    _id: "5a422aa71b54a676234d17f1",
+    title: "Updated Title",
+    author: "Test Man",
+    url: "https://cleancoder.com/files/CleanCodeSample.pdf",
+    likes: 10,
+  };
+
+  await api
+    .put(`/api/blogs/${updateBlogPost._id}`)
+    .send(updateBlogPost)
+    .expect(200);
+
+  const response = await api.get(`/api/blogs/${updateBlogPost._id}`);
+
+  const updatedBlogPost = {
+    id: response.body.id,
+    title: response.body.title,
+    author: response.body.author,
+    url: response.body.url,
+    likes: response.body.likes,
+  };
+
+  assert.deepEqual(
+    updatedBlogPost,
+    {
+      id: updateBlogPost._id,
+      title: updateBlogPost.title,
+      author: updateBlogPost.author,
+      url: updateBlogPost.url,
+      likes: updateBlogPost.likes,
+    },
+    "something was not updated correctly"
+  );
+});
 after(async () => {
   await mongoose.connection.close();
 });

@@ -31,7 +31,7 @@ blogRouter.post("/", async (request, response) => {
   try {
     const blogPost = new BlogPost(request.body);
     const result = await blogPost.save();
-    response.status(201).json(result);
+    response.status(201).json(result).end();
   } catch (error) {
     response.status(500).json({ error: error.message });
   }
@@ -42,6 +42,25 @@ blogRouter.delete("/:id", async (request, response) => {
     const id = request.params.id;
     const result = await BlogPost.findByIdAndDelete(id);
     response.status(204).json(result).end();
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
+blogRouter.put("/:id", async (request, response) => {
+  try {
+    const id = request.params.id;
+    const updatedBlogPost = {
+      title: request.body.title,
+      author: request.body.author,
+      url: request.body.url,
+      likes: request.body.likes,
+    };
+
+    const result = await BlogPost.findByIdAndUpdate(id, updatedBlogPost, {
+      new: true,
+    });
+    response.status(200).json(result).end();
   } catch (error) {
     response.status(500).json({ error: error.message });
   }
