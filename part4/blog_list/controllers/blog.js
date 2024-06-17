@@ -21,6 +21,13 @@ blogRouter.get("/:id", async (request, response) => {
 });
 
 blogRouter.post("/", async (request, response) => {
+  if (!request.body.title) {
+    return response.status(400).json({ error: "Title is missing" });
+  }
+  if (!request.body.url) {
+    return response.status(400).json({ error: "URL is missing" });
+  }
+
   try {
     const blogPost = new BlogPost(request.body);
     const result = await blogPost.save();

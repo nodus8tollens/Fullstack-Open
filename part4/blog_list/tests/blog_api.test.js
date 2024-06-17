@@ -131,6 +131,38 @@ test("verify that missing likes field defaults to 0", async () => {
   );
 });
 
+test("title missing returns 400", async () => {
+  const newBlogPost = {
+    author: "Robert C. Martin",
+    url: "https://www.cleancoder.com/",
+    likes: 45,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlogPost)
+    .expect(400)
+    .expect("Content-Type", /application\/json/);
+});
+
+after(async () => {
+  await mongoose.connection.close();
+});
+
+test("URL missing returns 400", async () => {
+  const newBlogPost = {
+    title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+    author: "Robert C. Martin",
+    likes: 45,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlogPost)
+    .expect(400)
+    .expect("Content-Type", /application\/json/);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
