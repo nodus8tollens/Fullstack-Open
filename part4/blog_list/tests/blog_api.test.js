@@ -79,6 +79,31 @@ test("blog posts have id property instead of _id", async () => {
   });
 });
 
+test("make a blog post", async () => {
+  const newBlogPost = new BlogPost({
+    _id: "6b533bb82c65b787345e28g6",
+    title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+    author: "Robert C. Martin",
+    url: "https://www.cleancoder.com/",
+    likes: 45,
+    __v: 0,
+  });
+
+  await api
+    .post("/api/blogs")
+    .send(newBlogPost)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const response = await api.get("/api/blogs");
+
+  assert.strictEqual(
+    response.body.length,
+    initialBlogPosts.length + 1,
+    "Length of initial db hasn't increased by one i.e. entry is not PUT"
+  );
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
