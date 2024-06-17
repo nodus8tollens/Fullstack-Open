@@ -59,3 +59,7 @@ describe("favorite blog", () => {
     assert.deepStrictEqual(result, expected);
   });
 });
+
+after(async () => {
+  await mongoose.connection.close();
+});

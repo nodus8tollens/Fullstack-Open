@@ -59,5 +59,26 @@ beforeEach(async () => {
 test("get all blog posts", async () => {
   const response = await api.get("/api/blogs");
 
-  assert.strictEqual(response.body.length, initialBlogPosts.length);
+  assert.strictEqual(
+    response.body.length,
+    initialBlogPosts.length,
+    "DB length should equal initialDB length"
+  );
+});
+
+test("blog posts have id property instead of _id", async () => {
+  const response = await api.get("/api/blogs");
+
+  response.body.forEach((blog) => {
+    assert(blog.id, "Blog should have an id property");
+    assert.strictEqual(
+      blog._id,
+      undefined,
+      "Blog should not have an _id property"
+    );
+  });
+});
+
+after(async () => {
+  await mongoose.connection.close();
 });
