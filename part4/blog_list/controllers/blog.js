@@ -10,6 +10,16 @@ blogRouter.get("/", async (request, response) => {
   }
 });
 
+blogRouter.get("/:id", async (request, response) => {
+  try {
+    const id = request.params.id;
+    const blogPost = await BlogPost.findById(id);
+    response.json(blogPost);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
 blogRouter.post("/", async (request, response) => {
   try {
     const blogPost = new BlogPost(request.body);
