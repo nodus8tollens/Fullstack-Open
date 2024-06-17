@@ -163,6 +163,22 @@ test("URL missing returns 400", async () => {
     .expect("Content-Type", /application\/json/);
 });
 
+test("delete one post", async () => {
+  console.log("initialBLogPosts pre-deletion: ", initialBlogPosts);
+
+  await api.delete(`/api/blogs/${initialBlogPosts[0]._id}`);
+
+  const result = await api.get("/api/blogs");
+
+  console.log("get all posts result: ", result.body);
+
+  assert.strictEqual(
+    initialBlogPosts.length,
+    result.body.length + 1,
+    "initial db and result from delete operation are not the same length"
+  );
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
