@@ -7,7 +7,7 @@ const blogPostSchema = new mongoose.Schema({
   likes: {
     type: Number,
     default: 0,
-  },
+  },              
 });
 
 blogPostSchema.set("toJSON", {
