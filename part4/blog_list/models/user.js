@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Blog",
+      ref: "BlogPost",
     },
   ],
 });
@@ -17,7 +17,7 @@ userSchema.set("toJSON", {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    delete returnedObject.passwordHash; // ensure the password hash is not revealed
+    delete returnedObject.passwordHash;
   },
 });
 

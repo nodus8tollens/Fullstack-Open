@@ -1,9 +1,13 @@
 const blogRouter = require("express").Router();
 const BlogPost = require("../models/blogPost");
+const User = require("../models/user");
 
 blogRouter.get("/", async (request, response) => {
   try {
-    const blogPosts = await BlogPost.find({});
+    const blogPosts = await BlogPost.find({}).populate("user", {
+      username: 1,
+      name: 1,
+    });
     response.json(blogPosts);
   } catch (error) {
     response.status(500).json({ error: error.message });
@@ -13,8 +17,15 @@ blogRouter.get("/", async (request, response) => {
 blogRouter.get("/:id", async (request, response) => {
   try {
     const id = request.params.id;
-    const blogPost = await BlogPost.findById(id);
-    response.json(blogPost);
+    const blogPost = await BlogPost.findById(id).populate("user", {
+      username: 1,
+      name: 1,
+    });
+    if (blogPost) {
+      response.json(blogPost);
+    } else {
+      response.status(404).end();
+    }
   } catch (error) {
     response.status(500).json({ error: error.message });
   }
@@ -29,9 +40,18 @@ blogRouter.post("/", async (request, response) => {
   }
 
   try {
-    const blogPost = new BlogPost(request.body);
-    const result = await blogPost.save();
-    response.status(201).json(result).end();
+    const users = await User.find({});
+    if (users.length === 0) {
+      return response.status(400).json({ error: "No users found" });
+    }
+    const user = users[0];
+    const blogPost = new BlogPost({ ...request.body, user: user._id });
+    const savedBlogPost = await blogPost.save();
+
+    user.blogs = user.blogs.concat(savedBlogPost._id);
+    await user.save();
+
+    response.status(201).json(savedBlogPost);
   } catch (error) {
     response.status(500).json({ error: error.message });
   }

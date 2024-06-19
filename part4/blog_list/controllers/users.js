@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const express = require("express");
-const User = require("../models/user"); // Adjust the path as necessary
+const User = require("../models/user");
 const usersRouter = express.Router();
 
 usersRouter.post("/", async (request, response) => {
@@ -37,6 +37,15 @@ usersRouter.post("/", async (request, response) => {
   const savedUser = await user.save();
 
   response.status(201).json(savedUser);
+});
+
+usersRouter.get("/", async (request, response) => {
+  const users = await User.find({}).populate("blogs", {
+    title: 1,
+    author: 1,
+    url: 1,
+  });
+  response.json(users);
 });
 
 module.exports = usersRouter;
