@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/blogs/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhc2FsbGVoIiwiaWQiOiI2NjcyYjJmOTZhMTRjNWE3ZDA2NjAwMjYiLCJpYXQiOjE3MTg4MDc0NDJ9.LlTMDBU3ny19jV3Ky1YnXEXO2G8vTxbkgyA_Yqwsf5o
+
+{
+  "title": "Test",
+  "author": "Predrag",
+  "url": "/test",
+  "likes": 100
+}
