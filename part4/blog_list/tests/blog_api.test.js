@@ -1,10 +1,13 @@
-const { test, after, beforeEach } = require("node:test");
+const { test, after, beforeEach, describe } = require("node:test");
 const assert = require("node:assert");
+const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 const BlogPost = require("../models/blogPost");
+const User = require("../models/user");
+const helper = require("./test_helper");
 
 const initialBlogPosts = [
   {
@@ -255,7 +258,7 @@ test("update one post; compare whole objects", async () => {
   );
 });
 
-describe("when there is initially one user at db", () => {
+describe("user creation", () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
