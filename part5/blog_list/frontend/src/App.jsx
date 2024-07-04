@@ -42,18 +42,6 @@ const App = () => {
     setPassword(event.target.value);
   };
 
-  const titleChange = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const authorChange = (event) => {
-    setAuthor(event.target.value);
-  };
-
-  const urlChange = (event) => {
-    setUrl(event.target.value);
-  };
-
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -85,28 +73,9 @@ const App = () => {
     }, 5000);
   };
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault();
-    try {
-      const newBlog = { title, author, url };
-      const result = await blogService.create(newBlog);
-      setBlogs(blogs.concat(result));
-      setTitle("");
-      setAuthor("");
-      setUrl("");
-      setNotification({ message: "New blog created", error: false });
-      setTimeout(() => {
-        setNotification("");
-      }, 5000);
-    } catch (error) {
-      setNotification({
-        message: `Error creating blog: ${error}`,
-        error: true,
-      });
-      setTimeout(() => {
-        setNotification("");
-      }, 5000);
-    }
+  const addBlog = async (newBlog) => {
+    const result = await blogService.create(newBlog);
+    setBlogs(blogs.concat(result));
   };
 
   return (
@@ -127,15 +96,7 @@ const App = () => {
           <button onClick={handleLogout}>Log Out</button>
           <Togglable buttonLabel="New Note">
             {" "}
-            <NewBlog
-              handleCreateBlog={handleCreateBlog}
-              title={title}
-              titleChange={titleChange}
-              author={author}
-              authorChange={authorChange}
-              url={url}
-              urlChange={urlChange}
-            />
+            <NewBlog addBlog={addBlog} setNotification={setNotification} />
           </Togglable>
 
           {blogs.map((blog) => (
