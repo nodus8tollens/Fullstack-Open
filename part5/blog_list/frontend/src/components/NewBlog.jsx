@@ -1,33 +1,6 @@
 import { useState } from "react";
 
 const NewBlog = ({ addBlog, setNotification }) => {
-  /*
-    const handleCreateBlog = async (event) => {
-    event.preventDefault();
-    try {
-      const newBlog = { title, author, url };
-      const result = await blogService.create(newBlog);
-      setBlogs(blogs.concat(result));
-      setTitle("");
-      setAuthor("");
-      setUrl("");
-      setNotification({ message: "New blog created", error: false });
-      setTimeout(() => {
-        setNotification("");
-      }, 5000);
-    } catch (error) {
-      setNotification({
-        message: `Error creating blog: ${error}`,
-        error: true,
-      });
-      setTimeout(() => {
-        setNotification("");
-      }, 5000);
-    }
-  };
-
-  */
-
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");

@@ -94,7 +94,7 @@ const App = () => {
           <h2>Blogs</h2>
           <p>{user.name} has logged in</p>
           <button onClick={handleLogout}>Log Out</button>
-          <Togglable buttonLabel="New Note">
+          <Togglable buttonLabel={{ show: "New Note", hide: "Cancel" }}>
             {" "}
             <NewBlog addBlog={addBlog} setNotification={setNotification} />
           </Togglable>
