@@ -17,7 +17,11 @@ const Blog = ({ blog, setBlogs, blogs }) => {
   };
 
   const increaseLike = async (blog) => {
-    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id };
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user ? blog.user.id : null,
+    };
     try {
       const returnedBlog = await blogService.update(blog.id, updatedBlog);
       returnedBlog.user = blog.user;
