@@ -16,7 +16,7 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      blogService.getAll().then((blogs) => {
+      blogService.getAllBlogs().then((blogs) => {
         blogs.sort((a, b) => b.likes - a.likes);
         setBlogs(blogs);
       });
@@ -74,7 +74,7 @@ const App = () => {
   };
 
   const addBlog = async (newBlog) => {
-    const result = await blogService.create(newBlog);
+    const result = await blogService.createBlog(newBlog);
     setBlogs(blogs.concat(result));
   };
 

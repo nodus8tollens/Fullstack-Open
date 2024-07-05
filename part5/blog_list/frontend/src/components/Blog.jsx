@@ -23,11 +23,24 @@ const Blog = ({ blog, setBlogs, blogs }) => {
       user: blog.user ? blog.user.id : null,
     };
     try {
-      const returnedBlog = await blogService.update(blog.id, updatedBlog);
+      const returnedBlog = await blogService.updateBlog(blog.id, updatedBlog);
       returnedBlog.user = blog.user;
       setBlogs(blogs.map((b) => (b.id !== blog.id ? b : returnedBlog)));
     } catch (error) {
       console.error("Error updating likes:", error);
+    }
+  };
+
+  const deleteBlog = async (blog) => {
+    console.log(blog);
+
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
+      try {
+        await blogService.deleteBlog(blog.id);
+        setBlogs(blogs.filter((b) => b.id !== blog.id));
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      }
     }
   };
 
@@ -55,6 +68,14 @@ const Blog = ({ blog, setBlogs, blogs }) => {
           </button>
           <br />
           {blog.user && blog.user.name ? blog.user.name : ""}
+          <br />
+          <button
+            onClick={() => {
+              deleteBlog(blog);
+            }}
+          >
+            Delete
+          </button>
         </div>
       )}
     </div>
