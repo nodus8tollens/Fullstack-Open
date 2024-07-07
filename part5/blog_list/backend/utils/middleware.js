@@ -2,6 +2,7 @@ const User = require("../models/user");
 const logger = require("./logger");
 const jwt = require("jsonwebtoken");
 
+//A middleware which logs details of the request
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);
   logger.info("Path:  ", request.path);
@@ -10,10 +11,12 @@ const requestLogger = (request, response, next) => {
   next();
 };
 
+//A middleware for logging unknown/wrong endpoint requests
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 
+//Error handling middleware for various scenarios
 const errorHandler = (error, request, response, next) => {
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
@@ -37,6 +40,8 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
+//Middleware for extracting the token from the auth header
+//It filters out the "Bearer" prefix and forwards the "pure" token.
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get("authorization");
   if (authorization && authorization.startsWith("Bearer ")) {
@@ -47,6 +52,8 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
+//Middlware for extracting User info from a request by decoding the requests auth token
+//and querying the db with the tokens data for a corresponding user
 const userExtractor = async (request, response, next) => {
   try {
     const token = request.token;

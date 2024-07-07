@@ -1,9 +1,8 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const express = require("express");
 const User = require("../models/user");
 const usersRouter = express.Router();
-
+//A route for creating users
 usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
 
@@ -26,6 +25,7 @@ usersRouter.post("/", async (request, response) => {
       .json({ error: "expected `username` to be unique" });
   }
 
+  //Encrypts the users password and saves an entry (User) into the db
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
@@ -39,7 +39,7 @@ usersRouter.post("/", async (request, response) => {
 
   response.status(201).json(savedUser);
 });
-
+//Returns a list of user and their associated (.populate) blogs.
 usersRouter.get("/", async (request, response) => {
   const users = await User.find({}).populate("blogs", {
     title: 1,

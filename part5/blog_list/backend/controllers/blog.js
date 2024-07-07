@@ -1,10 +1,9 @@
 const blogRouter = require("express").Router();
 const BlogPost = require("../models/blogPost");
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 
 blogRouter.get("/", async (request, response) => {
   try {
+    //Populates blog posts with corresponding users
     const blogPosts = await BlogPost.find({}).populate("user", {
       username: 1,
       name: 1,
@@ -43,9 +42,10 @@ blogRouter.post("/", async (request, response) => {
   try {
     const user = request.user;
     console.log(user);
+    //Saves blog post with its content and corresponding user's id
     const blogPost = new BlogPost({ ...request.body, user: user._id });
     const savedBlogPost = await blogPost.save();
-
+    //Saves blog post's id to the corresponding (request's) user
     user.blogs = user.blogs.concat(savedBlogPost._id);
     await user.save();
 

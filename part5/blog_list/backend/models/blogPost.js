@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+//The user field uses mongoose ObjectId and ref to refference and associate the
+//blogPost schema with the User schema. Furthermore, it uses the .populate and the user.id variable
+//to parse the corresponding user with their blog posts.
 const blogPostSchema = new mongoose.Schema({
   title: String,
   author: String,
@@ -14,6 +17,7 @@ const blogPostSchema = new mongoose.Schema({
   },
 });
 
+//Converts the blogPost schema toa more desirable API-appropriate format.
 blogPostSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();

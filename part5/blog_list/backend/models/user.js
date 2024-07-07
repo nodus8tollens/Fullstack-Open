@@ -12,6 +12,8 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+//Transforms the db entries to a more desirable API format
+//removing unwanted fields and converting the "_id" to "id".
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();

@@ -1,10 +1,12 @@
 import { useState } from "react";
 
 const NewBlog = ({ addBlog, setNotification }) => {
+  //States for the NewBlog (create blog) form
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-
+  //Handler func for creating a new blog, adding a new blog in the db (addBlog func),
+  //refreshing the states, and setting notifications
   const handleCreateBlog = async (event) => {
     event.preventDefault();
     try {

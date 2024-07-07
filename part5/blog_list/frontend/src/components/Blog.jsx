@@ -2,6 +2,7 @@ import { useState } from "react";
 import blogService from "../services/blogs";
 
 const Blog = ({ blog, setBlogs, blogs }) => {
+  //Used to declare and control the state (details) of the Blog component
   const [viewDetails, setViewDetails] = useState(false);
 
   const blogStyle = {
@@ -15,7 +16,8 @@ const Blog = ({ blog, setBlogs, blogs }) => {
   const toggleDetails = () => {
     setViewDetails(!viewDetails);
   };
-
+  //A handler function for the Like button/functionality. It updates the blog on the backend/db, while also
+  //controlling (lifting) the state of the Blog component in the App component.
   const increaseLike = async (blog) => {
     const updatedBlog = {
       ...blog,
@@ -31,6 +33,8 @@ const Blog = ({ blog, setBlogs, blogs }) => {
     }
   };
 
+  //A handler function for deleting a blog from the backend/db and updating the Blog component in
+  //the App component (by lifting the state)
   const deleteBlog = async (blog) => {
     console.log(blog);
 
@@ -46,6 +50,7 @@ const Blog = ({ blog, setBlogs, blogs }) => {
 
   return (
     <div style={blogStyle}>
+      {/*A conditional for displaying the Blog component in detailed and "simple" view*/}
       {!viewDetails ? (
         <div>
           {blog.title} {blog.author}
