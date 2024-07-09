@@ -83,7 +83,8 @@ const App = () => {
     const result = await blogService.createBlog(newBlog);
     setBlogs(blogs.concat(result));
   };
-
+  // A handler function for increasing the like count on individual blog posts. It PUT's an updated blog
+  // while also updating the frontend blog state with the response object (via setBlogs)
   const increaseLike = async (blog) => {
     const updatedBlog = {
       ...blog,

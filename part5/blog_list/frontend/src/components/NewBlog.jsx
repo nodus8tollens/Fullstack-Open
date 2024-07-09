@@ -36,6 +36,7 @@ const NewBlog = ({ addBlog, setNotification }) => {
       <form onSubmit={handleCreateBlog}>
         <label htmlFor="title">Title: </label>
         <input
+          className="title-input"
           type="text"
           name="title"
           value={title}
@@ -44,6 +45,7 @@ const NewBlog = ({ addBlog, setNotification }) => {
         <br />
         <label htmlFor="author">Author: </label>
         <input
+          className="author-input"
           type="text"
           name="author"
           value={author}
@@ -52,13 +54,16 @@ const NewBlog = ({ addBlog, setNotification }) => {
         <br />
         <label htmlFor="url">URL: </label>
         <input
+          className="url-input"
           type="text"
           name="url"
           value={url}
           onChange={(event) => setUrl(event.target.value)}
         />
         <br />
-        <button type="submit">Create</button>
+        <button className="create-blog-button" type="submit">
+          Create
+        </button>
       </form>
     </>
   );
