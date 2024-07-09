@@ -2,7 +2,6 @@ import { useState } from "react";
 import blogService from "../services/blogs";
 
 const Blog = ({ blog, setBlogs, blogs }) => {
-  //Used to declare and control the state (details) of the Blog component
   const [viewDetails, setViewDetails] = useState(false);
 
   const blogStyle = {
@@ -16,8 +15,7 @@ const Blog = ({ blog, setBlogs, blogs }) => {
   const toggleDetails = () => {
     setViewDetails(!viewDetails);
   };
-  //A handler function for the Like button/functionality. It updates the blog on the backend/db, while also
-  //controlling (lifting) the state of the Blog component in the App component.
+
   const increaseLike = async (blog) => {
     const updatedBlog = {
       ...blog,
@@ -33,11 +31,7 @@ const Blog = ({ blog, setBlogs, blogs }) => {
     }
   };
 
-  //A handler function for deleting a blog from the backend/db and updating the Blog component in
-  //the App component (by lifting the state)
   const deleteBlog = async (blog) => {
-    console.log(blog);
-
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
       try {
         await blogService.deleteBlog(blog.id);
@@ -49,38 +43,24 @@ const Blog = ({ blog, setBlogs, blogs }) => {
   };
 
   return (
-    <div style={blogStyle}>
-      {/*A conditional for displaying the Blog component in detailed and "simple" view*/}
+    <div style={blogStyle} className="blog-container">
       {!viewDetails ? (
-        <div>
+        <div className="blog-summary">
           {blog.title} {blog.author}
           <button onClick={toggleDetails}>View</button>
         </div>
       ) : (
-        <div>
+        <div className="blog-details">
           {blog.title} {blog.author}
           <button onClick={toggleDetails}>Hide</button>
           <br />
           {blog.url}
           <br />
-          {blog.likes}{" "}
-          <button
-            onClick={() => {
-              increaseLike(blog);
-            }}
-          >
-            Like
-          </button>
+          {blog.likes} <button onClick={() => increaseLike(blog)}>Like</button>
           <br />
           {blog.user && blog.user.name ? blog.user.name : ""}
           <br />
-          <button
-            onClick={() => {
-              deleteBlog(blog);
-            }}
-          >
-            Delete
-          </button>
+          <button onClick={() => deleteBlog(blog)}>Delete</button>
         </div>
       )}
     </div>
