@@ -47,7 +47,9 @@ const Blog = ({ blog, setBlogs, blogs }) => {
       {!viewDetails ? (
         <div className="blog-summary">
           {blog.title} {blog.author}
-          <button onClick={toggleDetails}>View</button>
+          <button className="view-details-button" onClick={toggleDetails}>
+            View
+          </button>
         </div>
       ) : (
         <div className="blog-details">
