@@ -84,6 +84,32 @@ const App = () => {
     setBlogs(blogs.concat(result));
   };
 
+  const increaseLike = async (blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user ? blog.user.id : null,
+    };
+    try {
+      const returnedBlog = await blogService.updateBlog(blog.id, updatedBlog);
+      returnedBlog.user = blog.user;
+      setBlogs(blogs.map((b) => (b.id !== blog.id ? b : returnedBlog)));
+    } catch (error) {
+      console.error("Error updating likes:", error);
+    }
+  };
+
+  const deleteBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
+      try {
+        await blogService.deleteBlog(blog.id);
+        setBlogs(blogs.filter((b) => b.id !== blog.id));
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      }
+    }
+  };
+
   return (
     <div>
       {/*If the notification state is not null, the Notification component will render with the states' content */}
@@ -108,7 +134,12 @@ const App = () => {
           </Togglable>
           {/*We use Array.map to dynamically render the blogs*/}
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              increaseLike={increaseLike}
+              deleteBlog={deleteBlog}
+            />
           ))}
         </div>
       )}

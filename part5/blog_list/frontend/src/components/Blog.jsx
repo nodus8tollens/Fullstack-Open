@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, setBlogs, blogs }) => {
+const Blog = ({ blog, setBlogs, blogs, increaseLike, deleteBlog }) => {
   const [viewDetails, setViewDetails] = useState(false);
 
   const blogStyle = {
@@ -16,32 +16,6 @@ const Blog = ({ blog, setBlogs, blogs }) => {
     setViewDetails(!viewDetails);
   };
 
-  const increaseLike = async (blog) => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user ? blog.user.id : null,
-    };
-    try {
-      const returnedBlog = await blogService.updateBlog(blog.id, updatedBlog);
-      returnedBlog.user = blog.user;
-      setBlogs(blogs.map((b) => (b.id !== blog.id ? b : returnedBlog)));
-    } catch (error) {
-      console.error("Error updating likes:", error);
-    }
-  };
-
-  const deleteBlog = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
-      try {
-        await blogService.deleteBlog(blog.id);
-        setBlogs(blogs.filter((b) => b.id !== blog.id));
-      } catch (error) {
-        console.error("Error deleting blog:", error);
-      }
-    }
-  };
-
   return (
     <div style={blogStyle} className="blog-container">
       {!viewDetails ? (
@@ -54,15 +28,28 @@ const Blog = ({ blog, setBlogs, blogs }) => {
       ) : (
         <div className="blog-details">
           {blog.title} {blog.author}
-          <button onClick={toggleDetails}>Hide</button>
+          <button className="hide-details-button" onClick={toggleDetails}>
+            Hide
+          </button>
           <br />
           {blog.url}
           <br />
-          {blog.likes} <button onClick={() => increaseLike(blog)}>Like</button>
+          {blog.likes}{" "}
+          <button
+            className="like-blog-button"
+            onClick={() => increaseLike(blog)}
+          >
+            Like
+          </button>
           <br />
           {blog.user && blog.user.name ? blog.user.name : ""}
           <br />
-          <button onClick={() => deleteBlog(blog)}>Delete</button>
+          <button
+            className="delete-blog-button"
+            onClick={() => deleteBlog(blog)}
+          >
+            Delete
+          </button>
         </div>
       )}
     </div>
