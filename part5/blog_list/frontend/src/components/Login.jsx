@@ -13,6 +13,7 @@ const Login = ({
       <form onSubmit={handleLogin} data-testid="login-form">
         <label htmlFor="Username">Username: </label>
         <input
+          data-testid="login-username"
           type="text"
           placeholder="John Doe"
           value={username}
@@ -21,13 +22,16 @@ const Login = ({
         <br />
         <label htmlFor="Password">Password: </label>
         <input
+          data-testid="login-password"
           type="password"
           placeholder="Password"
           value={password}
           onChange={passwordChange}
         />
         <br />
-        <button type="submit">login</button>
+        <button data-testid="login-submit" type="submit">
+          login
+        </button>
       </form>
     </>
   );
