@@ -10,7 +10,7 @@ const Login = ({
   return (
     <>
       <h3>Log In:</h3>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleLogin} data-testid="login-form">
         <label htmlFor="Username">Username: </label>
         <input
           type="text"
