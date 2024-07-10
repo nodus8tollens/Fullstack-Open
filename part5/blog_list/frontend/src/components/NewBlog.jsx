@@ -30,6 +30,11 @@ const NewBlog = ({ addBlog, setNotification }) => {
     }
   };
 
+  const inlineStyle = {
+    display: "inline-block",
+    marginRight: 10,
+  };
+
   return (
     <>
       <h3>Create New: </h3>
@@ -37,6 +42,7 @@ const NewBlog = ({ addBlog, setNotification }) => {
         <label htmlFor="title">Title: </label>
         <input
           className="title-input"
+          data-testid="title-input"
           type="text"
           name="title"
           value={title}
@@ -46,6 +52,7 @@ const NewBlog = ({ addBlog, setNotification }) => {
         <label htmlFor="author">Author: </label>
         <input
           className="author-input"
+          data-testid="author-input"
           type="text"
           name="author"
           value={author}
@@ -55,13 +62,19 @@ const NewBlog = ({ addBlog, setNotification }) => {
         <label htmlFor="url">URL: </label>
         <input
           className="url-input"
+          data-testid="url-input"
           type="text"
           name="url"
           value={url}
           onChange={(event) => setUrl(event.target.value)}
         />
         <br />
-        <button className="create-blog-button" type="submit">
+        <button
+          style={inlineStyle}
+          data-testid="create-blog-button"
+          className="create-blog-button"
+          type="submit"
+        >
           Create
         </button>
       </form>

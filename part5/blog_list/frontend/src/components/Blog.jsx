@@ -11,6 +11,11 @@ const Blog = ({ blog, increaseLike, deleteBlog }) => {
     marginBottom: 5,
   };
 
+  const inlineStyle = {
+    display: "inline-block",
+    marginRight: 10,
+  };
+
   const toggleDetails = () => {
     setViewDetails(!viewDetails);
   };
@@ -19,36 +24,60 @@ const Blog = ({ blog, increaseLike, deleteBlog }) => {
     <div style={blogStyle} className="blog-container">
       {!viewDetails ? (
         <div className="blog-summary">
-          {blog.title} {blog.author}
-          <button className="view-details-button" onClick={toggleDetails}>
+          <div className="blog-title">Title: {blog.title}</div>
+          <div className="blog-author">Author: {blog.author}</div>
+          <button
+            className="view-details-button"
+            data-testid="view-details-button"
+            onClick={toggleDetails}
+          >
             View
           </button>
         </div>
       ) : (
         <div className="blog-details">
-          {blog.title} {blog.author}
-          <button className="hide-details-button" onClick={toggleDetails}>
-            Hide
-          </button>
-          <br />
-          {blog.url}
-          <br />
-          {blog.likes}{" "}
-          <button
-            className="like-blog-button"
-            onClick={() => increaseLike(blog)}
-          >
-            Like
-          </button>
-          <br />
-          {blog.user && blog.user.name ? blog.user.name : ""}
-          <br />
-          <button
-            className="delete-blog-button"
-            onClick={() => deleteBlog(blog)}
-          >
-            Delete
-          </button>
+          <div className="blog-title">Title: {blog.title}</div>
+          <div className="blog-author">Author: {blog.author}</div>
+
+          <div className="blog-url">URL: {blog.url}</div>
+          <div>
+            <div
+              className="blog-likes"
+              data-testid="blog-likes"
+              style={inlineStyle}
+            >
+              Likes:
+              {blog.likes}
+            </div>
+            <button
+              className="like-blog-button"
+              style={inlineStyle}
+              data-testid="like-blog-button"
+              onClick={() => increaseLike(blog)}
+            >
+              Like
+            </button>
+          </div>
+
+          <div className="blog-user">
+            {blog.user && blog.user.name ? blog.user.name : ""}
+          </div>
+          <div>
+            <button
+              className="hide-details-button"
+              onClick={toggleDetails}
+              style={inlineStyle}
+            >
+              Hide
+            </button>
+            <button
+              style={inlineStyle}
+              className="delete-blog-button"
+              onClick={() => deleteBlog(blog)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       )}
     </div>

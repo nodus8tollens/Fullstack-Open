@@ -39,4 +39,37 @@ describe("Blog app", () => {
       await expect(page.getByText("Error Logging in")).toBeVisible();
     });
   });
+
+  /*
+  Create a test that verifies that a logged in user can create a blog. 
+  */
+  describe("When logged in", () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, "mluukkai", "salainen");
+    });
+
+    test("a new blog can be created", async ({ page }) => {
+      await createBlog(page, {
+        title: "Test Title",
+        author: "Test Author",
+        url: "Test URL",
+      });
+      await expect(page.getByText("Test Title")).toBeVisible();
+    });
+
+    describe("a blog exists", () => {
+      beforeEach(async ({ page }) => {
+        await createBlog(page, {
+          title: "Test Title",
+          author: "Test Author",
+          url: "Test URL",
+        });
+      });
+      test("a blog can be liked", async ({ page }) => {
+        await page.getByTestId("view-details-button").click();
+        await page.getByTestId("like-blog-button").click();
+        await expect(page.getByTestId("blog-likes")).toHaveText("Likes:1");
+      });
+    });
+  });
 });
