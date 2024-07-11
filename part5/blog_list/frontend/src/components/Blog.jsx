@@ -73,6 +73,7 @@ const Blog = ({ blog, increaseLike, deleteBlog }) => {
             <button
               style={inlineStyle}
               className="delete-blog-button"
+              data-testid="delete-blog-button"
               onClick={() => deleteBlog(blog)}
             >
               Delete

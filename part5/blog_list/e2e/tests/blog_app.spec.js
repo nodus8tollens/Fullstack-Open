@@ -1,5 +1,6 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
 const { loginWith, createBlog } = require("./helper");
+const exp = require("constants");
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -65,10 +66,33 @@ describe("Blog app", () => {
           url: "Test URL",
         });
       });
+
+      /*
+      Do a test that makes sure the blog can be liked.
+      */
+
       test("a blog can be liked", async ({ page }) => {
         await page.getByTestId("view-details-button").click();
         await page.getByTestId("like-blog-button").click();
         await expect(page.getByTestId("blog-likes")).toHaveText("Likes:1");
+      });
+
+      /*
+      Make a test that ensures that the user who added the blog can delete the blog. 
+      If you use the window.confirm dialog in the delete operation, 
+      you may have to Google how to use the dialog in the Playwright tests.
+      */
+
+      test("a blog can be deleted", async ({ page }) => {
+        page.on("dialog", async (dialog) => {
+          expect(dialog.type()).toBe("confirm");
+          await dialog.accept();
+        });
+
+        await page.getByTestId("view-details-button").click();
+        await page.getByTestId("delete-blog-button").click();
+
+        await expect(page.getByText("Test Title")).not.toBeVisible();
       });
     });
   });
