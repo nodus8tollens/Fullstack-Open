@@ -1,7 +1,9 @@
 import { useState } from "react";
 
-const Blog = ({ blog, increaseLike, deleteBlog }) => {
+const Blog = ({ blog, user, increaseLike, deleteBlog }) => {
   const [viewDetails, setViewDetails] = useState(false);
+
+  console.log("Blog: ", blog);
 
   const blogStyle = {
     paddingTop: 10,
@@ -38,7 +40,6 @@ const Blog = ({ blog, increaseLike, deleteBlog }) => {
         <div className="blog-details">
           <div className="blog-title">Title: {blog.title}</div>
           <div className="blog-author">Author: {blog.author}</div>
-
           <div className="blog-url">URL: {blog.url}</div>
           <div>
             <div
@@ -46,8 +47,7 @@ const Blog = ({ blog, increaseLike, deleteBlog }) => {
               data-testid="blog-likes"
               style={inlineStyle}
             >
-              Likes:
-              {blog.likes}
+              Likes: {blog.likes}
             </div>
             <button
               className="like-blog-button"
@@ -58,9 +58,8 @@ const Blog = ({ blog, increaseLike, deleteBlog }) => {
               Like
             </button>
           </div>
-
           <div className="blog-user">
-            {blog.user && blog.user.name ? blog.user.name : ""}
+            User: {blog.user && blog.user.name ? blog.user.name : ""}
           </div>
           <div>
             <button
@@ -70,14 +69,16 @@ const Blog = ({ blog, increaseLike, deleteBlog }) => {
             >
               Hide
             </button>
-            <button
-              style={inlineStyle}
-              className="delete-blog-button"
-              data-testid="delete-blog-button"
-              onClick={() => deleteBlog(blog)}
-            >
-              Delete
-            </button>
+            {blog.user && blog.user.username === user.username && (
+              <button
+                style={inlineStyle}
+                className="delete-blog-button"
+                data-testid="delete-blog-button"
+                onClick={() => deleteBlog(blog)}
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
       )}

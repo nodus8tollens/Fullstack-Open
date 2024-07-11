@@ -80,7 +80,13 @@ const App = () => {
   };
   //A handler function used for adding new blogs via the blogService module, and the Blog component state (via setBlogs)
   const addBlog = async (newBlog) => {
-    const result = await blogService.createBlog(newBlog);
+    const result = await blogService.createBlog({ ...newBlog, user: user });
+    result.user = {
+      username: user.username,
+      name: user.name,
+      id: user.id,
+    };
+
     setBlogs(blogs.concat(result));
   };
   // A handler function for increasing the like count on individual blog posts. It PUT's an updated blog
@@ -128,7 +134,9 @@ const App = () => {
         <div>
           <h2>Blogs</h2>
           <p>{user.name} has logged in</p>
-          <button onClick={handleLogout}>Log Out</button>
+          <button data-testid="logout-button" onClick={handleLogout}>
+            Log Out
+          </button>
           <Togglable buttonLabel={{ show: "New Note", hide: "Cancel" }}>
             {" "}
             <NewBlog addBlog={addBlog} setNotification={setNotification} />
@@ -138,6 +146,7 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
+              user={user}
               increaseLike={increaseLike}
               deleteBlog={deleteBlog}
             />
