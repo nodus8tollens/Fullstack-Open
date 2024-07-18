@@ -1,9 +1,11 @@
+// A declaration of the initial component state
 const initialState = {
   good: 0,
   ok: 0,
   bad: 0,
 };
 
+// A reducer is a function for handling actions and updating state in redux
 const counterReducer = (state = initialState, action) => {
   switch (action.type) {
     case "GOOD":
