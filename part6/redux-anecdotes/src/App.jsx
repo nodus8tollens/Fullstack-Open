@@ -1,5 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 
+import { createAnecdote, voteAnecdote } from "./reducers/anecdoteReducer";
+
 const App = () => {
   // useSelector is a hook from react-redux that allows us
   // to extract data from the Redux store state.
@@ -15,11 +17,8 @@ const App = () => {
     console.log("vote", id);
     // Dispatch the VOTE_ANECDOTE action with
     // the id of the anecdote to be voted
-    dispatch({ type: "VOTE_ANECDOTE", data: { id } });
+    dispatch(voteAnecdote(id));
   };
-
-  // Generates unique id's
-  const generateId = () => (100000 * Math.random()).toFixed(0);
 
   // Handler for creating new anecdotes
   const addAnecdote = (event) => {
@@ -28,7 +27,7 @@ const App = () => {
     event.target.anecdote.value = "";
     // Creates and dispatches a CREATE_ANECDOTE action
     // with the appropriate payload
-    dispatch({ type: "CREATE_ANECDOTE", payload: { content, id: generateId } });
+    dispatch(createAnecdote(content));
   };
 
   return (
