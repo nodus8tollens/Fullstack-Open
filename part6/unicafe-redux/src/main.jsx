@@ -4,24 +4,30 @@ import ReactDOM from "react-dom/client";
 import { createStore } from "redux";
 import reducer from "./reducer";
 
+// Initializes a global store for component states
+// by creating a store object from the reducer function
 const store = createStore(reducer);
 
 const App = () => {
+  // Handler for dispatching a "GOOD" action
   const good = () => {
     store.dispatch({
       type: "GOOD",
     });
   };
+  // ...
   const ok = () => {
     store.dispatch({
       type: "OK",
     });
   };
+  // ...
   const bad = () => {
     store.dispatch({
       type: "BAD",
     });
   };
+  // Handler for dispatching a "RESET" action
   const reset = () => {
     store.dispatch({
       type: "ZERO",
