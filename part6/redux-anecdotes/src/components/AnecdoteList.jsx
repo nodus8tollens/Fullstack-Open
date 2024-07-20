@@ -4,7 +4,12 @@ import { voteAnecdote } from "../reducers/anecdoteReducer";
 const AnecdoteList = () => {
   // useSelector is a hook from react-redux that allows us
   // to extract data from the Redux store state.
-  const anecdotes = useSelector((state) => state);
+  // Additionally, it filters the anecdotes based on the state of the filter.
+  const anecdotes = useSelector(({ filter, anecdotes }) => {
+    return anecdotes.filter((anecdote) =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    );
+  });
 
   anecdotes.sort((a, b) => b.votes - a.votes);
 
@@ -22,7 +27,6 @@ const AnecdoteList = () => {
 
   return (
     <>
-      <h2>Anecdotes</h2>
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
