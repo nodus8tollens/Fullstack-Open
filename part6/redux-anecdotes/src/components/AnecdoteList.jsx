@@ -1,5 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { voteAnecdote } from "../reducers/anecdoteReducer";
+import {
+  setNotification,
+  clearNotification,
+} from "../reducers/notificationReducer";
 
 const AnecdoteList = () => {
   // useSelector is a hook from react-redux that allows us
@@ -18,11 +22,15 @@ const AnecdoteList = () => {
   const dispatch = useDispatch();
 
   // Function/React handler for voting on an anecdote
-  const vote = (id) => {
-    console.log("vote", id);
+  const vote = (id, content) => {
     // Dispatch the VOTE_ANECDOTE action with
     // the id of the anecdote to be voted
     dispatch(voteAnecdote(id));
+    // Dispatches a notification
+    dispatch(setNotification(`Voted for anecdote: "${content}"`));
+    setTimeout(() => {
+      dispatch(clearNotification());
+    }, 5000);
   };
 
   return (
@@ -32,7 +40,9 @@ const AnecdoteList = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote.id, anecdote.content)}>
+              vote
+            </button>
           </div>
         </div>
       ))}
