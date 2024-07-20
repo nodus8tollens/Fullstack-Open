@@ -1,20 +1,14 @@
-// A reducer for the SET_FILTER action. Upon being activated by the dispatch func,
-// it forwards the filter string (action.payload) to the store
-const filterReducer = (state = "", action) => {
-  switch (action.type) {
-    case "SET_FILTER":
-      return action.payload;
-    default:
-      return state;
-  }
-};
+import { createSlice } from "@reduxjs/toolkit";
 
-// Used to forward an action to the dispatch
-const setFilter = (filter) => {
-  return {
-    type: "SET_FILTER",
-    payload: filter,
-  };
-};
+const filterSlice = createSlice({
+  // Slice is named "filter" and has an initial state of an empty string
+  name: "filter",
+  initialState: "",
+  reducers: {
+    // Handles the action to update the filter state
+    setFilter: (state, action) => action.payload,
+  },
+});
 
-export { filterReducer, setFilter };
+export const { setFilter } = filterSlice.actions;
+export default filterSlice.reducer;
