@@ -23,10 +23,7 @@ const AnecdoteList = () => {
 
   // Function/React handler for voting on an anecdote
   const vote = (id, content) => {
-    // Dispatch the VOTE_ANECDOTE action with
-    // the id of the anecdote to be voted
     dispatch(voteAnecdote(id));
-    // Dispatches a notification
     dispatch(setNotification(`Voted for anecdote: "${content}"`));
     setTimeout(() => {
       dispatch(clearNotification());
