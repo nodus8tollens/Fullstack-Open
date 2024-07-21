@@ -1,9 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { voteAnecdote } from "../reducers/anecdoteReducer";
-import {
-  setNotification,
-  clearNotification,
-} from "../reducers/notificationReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
 const AnecdoteList = () => {
   // useSelector is a hook from react-redux that allows us
@@ -24,10 +21,7 @@ const AnecdoteList = () => {
   // Function/React handler for voting on an anecdote
   const vote = (id, content) => {
     dispatch(voteAnecdote(id));
-    dispatch(setNotification(`Voted for anecdote: "${content}"`));
-    setTimeout(() => {
-      dispatch(clearNotification());
-    }, 5000);
+    dispatch(setNotification(`You voted for: "${content}"`, 5));
   };
 
   return (
