@@ -1,28 +1,26 @@
-import { useSelector, useDispatch } from "react-redux";
-import { voteAnecdote } from "../reducers/anecdoteReducer";
-import { setNotification } from "../reducers/notificationReducer";
+import { useQuery } from "@tanstack/react-query";
+import { getAnecdotes } from "../services/requests";
 
 const AnecdoteList = () => {
-  // useSelector is a hook from react-redux that allows us
-  // to extract data from the Redux store state.
-  // Additionally, it filters the anecdotes based on the state of the filter.
-  const anecdotes = useSelector(({ filter, anecdotes }) => {
-    return anecdotes.filter((anecdote) =>
-      anecdote.content.toLowerCase().includes(filter.toLowerCase())
-    );
+  const result = useQuery({
+    queryKey: ["anecdotes"],
+    queryFn: getAnecdotes,
+    retry: 1,
   });
 
+  console.log(JSON.parse(JSON.stringify(result)));
+
+  if (result.isLoading) {
+    return <div>loading data...</div>;
+  }
+
+  if (result.isError) {
+    return <div>anecdote service not available due to problems in server</div>;
+  }
+
+  const anecdotes = result.data;
+
   anecdotes.sort((a, b) => b.votes - a.votes);
-
-  // useDispatch is a hook from react-redux that returns
-  // a reference to the dispatch function from the Redux store.
-  const dispatch = useDispatch();
-
-  // Function/React handler for voting on an anecdote
-  const vote = (id, content) => {
-    dispatch(voteAnecdote(id));
-    dispatch(setNotification(`You voted for: "${content}"`, 5));
-  };
 
   return (
     <>
@@ -31,9 +29,7 @@ const AnecdoteList = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id, anecdote.content)}>
-              vote
-            </button>
+            <button onClick={() => console.log("Vote")}>vote</button>
           </div>
         </div>
       ))}
