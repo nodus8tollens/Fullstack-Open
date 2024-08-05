@@ -112,15 +112,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input {...content.getInputProps()} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...author.getInputProps()} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...info.getInputProps()} />
         </div>
         <button type="submit">create</button>
         <button type="button" onClick={resetFields}>
