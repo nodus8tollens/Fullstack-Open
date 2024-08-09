@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNotification } from "../context/NotificationContext";
 
-const NewBlog = ({ addBlog, setNotification }) => {
+const NewBlog = ({ addBlog }) => {
   //States for the NewBlog (create blog) form
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const { dispatch } = useNotification();
   //Handler func for creating a new blog, adding a new blog in the db (addBlog func),
   //refreshing the states, and setting notifications
   const handleCreateBlog = async (event) => {
@@ -15,17 +17,20 @@ const NewBlog = ({ addBlog, setNotification }) => {
       setTitle("");
       setAuthor("");
       setUrl("");
-      setNotification({ message: "New blog created", error: false });
-      setTimeout(() => {
-        setNotification("");
-      }, 5000);
-    } catch (error) {
-      setNotification({
-        message: `Error creating blog: ${error}`,
-        error: true,
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: "New blog created", error: false },
       });
       setTimeout(() => {
-        setNotification("");
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
+    } catch (error) {
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: `Error creating blog: ${error}`, error: true },
+      });
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
       }, 5000);
     }
   };

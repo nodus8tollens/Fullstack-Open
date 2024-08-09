@@ -6,14 +6,15 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import { useNotification } from "./context/NotificationContext";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState("");
 
+  const { state: notification, dispatch } = useNotification();
   //Whenever the component mounts or one of its dependencies change (e.g. [user]),
   //the useEffect hook will execute its callback function (e.g. blogService.getAllBlogs())
   useEffect(() => {
@@ -56,38 +57,76 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
-      setNotification({ message: "Login successful", error: false });
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: "Login successful", error: false },
+      });
       setTimeout(() => {
-        setNotification("");
+        dispatch({ type: "HIDE_NOTIFICATION" });
       }, 5000);
     } catch (error) {
-      setNotification({ message: `Error logging in: ${error}`, error: true });
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: `Error logging in: ${error}`, error: true },
+      });
       setTimeout(() => {
-        setNotification("");
+        dispatch({ type: "HIDE_NOTIFICATION" });
       }, 5000);
     }
   };
   //A handler function passed to the Log Out button that removes user data from local storage
   //and handles the states of dependant components.
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogUser");
-    setUser(null);
-    setBlogs([]);
-    setNotification({ message: "Logged out successfully", error: false });
-    setTimeout(() => {
-      setNotification("");
-    }, 5000);
+    try {
+      window.localStorage.removeItem("loggedBlogUser");
+      setUser(null);
+      setBlogs([]);
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: "Logged out successfully", error: false },
+      });
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
+    } catch (error) {
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: {
+          message: `Error logging out: ${error}`,
+          error: true,
+        },
+      });
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
+    }
   };
   //A handler function used for adding new blogs via the blogService module, and the Blog component state (via setBlogs)
   const addBlog = async (newBlog) => {
-    const result = await blogService.createBlog({ ...newBlog, user: user });
-    result.user = {
-      username: user.username,
-      name: user.name,
-      id: user.id,
-    };
-
-    setBlogs(blogs.concat(result));
+    try {
+      const result = await blogService.createBlog({ ...newBlog, user: user });
+      result.user = {
+        username: user.username,
+        name: user.name,
+        id: user.id,
+      };
+      setBlogs(blogs.concat(result));
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: "New blog created", error: false },
+      });
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
+    } catch (error) {
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: `Error creating blog: ${error}`, error: true },
+      });
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
+    }
   };
   // A handler function for increasing the like count on individual blog posts. It PUT's an updated blog
   // while also updating the frontend blog state with the response object (via setBlogs)
@@ -102,7 +141,13 @@ const App = () => {
       returnedBlog.user = blog.user;
       setBlogs(blogs.map((b) => (b.id !== blog.id ? b : returnedBlog)));
     } catch (error) {
-      console.error("Error updating likes:", error);
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: `Error liking blog: ${error}`, error: true },
+      });
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
     }
   };
 
@@ -111,8 +156,21 @@ const App = () => {
       try {
         await blogService.deleteBlog(blog.id);
         setBlogs(blogs.filter((b) => b.id !== blog.id));
+        dispatch({
+          type: "SHOW_NOTIFICATION",
+          payload: { message: "Deleted blog", error: false },
+        });
+        setTimeout(() => {
+          dispatch({ type: "HIDE_NOTIFICATION" });
+        }, 5000);
       } catch (error) {
-        console.error("Error deleting blog:", error);
+        dispatch({
+          type: "SHOW_NOTIFICATION",
+          payload: { message: `Error deleting blog: ${error}`, error: true },
+        });
+        setTimeout(() => {
+          dispatch({ type: "HIDE_NOTIFICATION" });
+        }, 5000);
       }
     }
   };
@@ -120,7 +178,9 @@ const App = () => {
   return (
     <div>
       {/*If the notification state is not null, the Notification component will render with the states' content */}
-      {notification && <Notification notification={notification} />}
+      {notification.message !== "" && (
+        <Notification notification={notification} />
+      )}
       {/*If there is no user, the Login component will render, else the user's blogs and its accompanying components will render */}
       {user === null ? (
         <Login
@@ -139,7 +199,7 @@ const App = () => {
           </button>
           <Togglable buttonLabel={{ show: "New Note", hide: "Cancel" }}>
             {" "}
-            <NewBlog addBlog={addBlog} setNotification={setNotification} />
+            <NewBlog addBlog={addBlog} />
           </Togglable>
           {/*We use Array.map to dynamically render the blogs*/}
           {blogs.map((blog) => (
@@ -156,5 +216,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
