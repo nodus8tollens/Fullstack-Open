@@ -7,28 +7,15 @@ import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { useNotification } from "./context/NotificationContext";
+import { useQuery } from "@tanstack/react-query";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   const { state: notification, dispatch } = useNotification();
-  //Whenever the component mounts or one of its dependencies change (e.g. [user]),
-  //the useEffect hook will execute its callback function (e.g. blogService.getAllBlogs())
-  useEffect(() => {
-    if (user) {
-      blogService.getAllBlogs().then((blogs) => {
-        blogs.sort((a, b) => b.likes - a.likes);
-        setBlogs(blogs);
-      });
-    } else {
-      setBlogs([]);
-    }
-  }, [user]);
-  //Since no dependencies are specified ( [] ), the useEffect hook will execute only upon mounting the component.
-  //In this case, the hook checks for a logged user in the browsers local storage and sets a token
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogUser");
     if (loggedUserJSON) {
@@ -37,6 +24,7 @@ const App = () => {
       blogService.setToken(loggedUser.token);
     }
   }, []);
+
   //This, and similar functions, which can be written shorthand and inline, are used to set and control
   //values of the components forms.
   const usernameChange = (event) => {
@@ -46,6 +34,7 @@ const App = () => {
   const passwordChange = (event) => {
     setPassword(event.target.value);
   };
+
   //A handler function passed to the Login component that executes login, local storage, Login component state,
   //and Notification component state functionalities
   const handleLogin = async (event) => {
@@ -74,6 +63,7 @@ const App = () => {
       }, 5000);
     }
   };
+
   //A handler function passed to the Log Out button that removes user data from local storage
   //and handles the states of dependant components.
   const handleLogout = () => {
@@ -101,33 +91,7 @@ const App = () => {
       }, 5000);
     }
   };
-  //A handler function used for adding new blogs via the blogService module, and the Blog component state (via setBlogs)
-  const addBlog = async (newBlog) => {
-    try {
-      const result = await blogService.createBlog({ ...newBlog, user: user });
-      result.user = {
-        username: user.username,
-        name: user.name,
-        id: user.id,
-      };
-      setBlogs(blogs.concat(result));
-      dispatch({
-        type: "SHOW_NOTIFICATION",
-        payload: { message: "New blog created", error: false },
-      });
-      setTimeout(() => {
-        dispatch({ type: "HIDE_NOTIFICATION" });
-      }, 5000);
-    } catch (error) {
-      dispatch({
-        type: "SHOW_NOTIFICATION",
-        payload: { message: `Error creating blog: ${error}`, error: true },
-      });
-      setTimeout(() => {
-        dispatch({ type: "HIDE_NOTIFICATION" });
-      }, 5000);
-    }
-  };
+
   // A handler function for increasing the like count on individual blog posts. It PUT's an updated blog
   // while also updating the frontend blog state with the response object (via setBlogs)
   const increaseLike = async (blog) => {
@@ -175,6 +139,22 @@ const App = () => {
     }
   };
 
+  //React Query fetch data
+  const result = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getAllBlogs,
+  });
+
+  if (result.isLoading) {
+    return <div>loading data...</div>;
+  }
+
+  if (result.isError) {
+    return <div>blog service not available due to problem in server</div>;
+  }
+
+  const blogs = result.data;
+
   return (
     <div>
       {/*If the notification state is not null, the Notification component will render with the states' content */}
@@ -199,7 +179,7 @@ const App = () => {
           </button>
           <Togglable buttonLabel={{ show: "New Note", hide: "Cancel" }}>
             {" "}
-            <NewBlog addBlog={addBlog} />
+            <NewBlog />
           </Togglable>
           {/*We use Array.map to dynamically render the blogs*/}
           {blogs.map((blog) => (
