@@ -92,53 +92,6 @@ const App = () => {
     }
   };
 
-  // A handler function for increasing the like count on individual blog posts. It PUT's an updated blog
-  // while also updating the frontend blog state with the response object (via setBlogs)
-  const increaseLike = async (blog) => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user ? blog.user.id : null,
-    };
-    try {
-      const returnedBlog = await blogService.updateBlog(blog.id, updatedBlog);
-      returnedBlog.user = blog.user;
-      setBlogs(blogs.map((b) => (b.id !== blog.id ? b : returnedBlog)));
-    } catch (error) {
-      dispatch({
-        type: "SHOW_NOTIFICATION",
-        payload: { message: `Error liking blog: ${error}`, error: true },
-      });
-      setTimeout(() => {
-        dispatch({ type: "HIDE_NOTIFICATION" });
-      }, 5000);
-    }
-  };
-
-  const deleteBlog = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
-      try {
-        await blogService.deleteBlog(blog.id);
-        setBlogs(blogs.filter((b) => b.id !== blog.id));
-        dispatch({
-          type: "SHOW_NOTIFICATION",
-          payload: { message: "Deleted blog", error: false },
-        });
-        setTimeout(() => {
-          dispatch({ type: "HIDE_NOTIFICATION" });
-        }, 5000);
-      } catch (error) {
-        dispatch({
-          type: "SHOW_NOTIFICATION",
-          payload: { message: `Error deleting blog: ${error}`, error: true },
-        });
-        setTimeout(() => {
-          dispatch({ type: "HIDE_NOTIFICATION" });
-        }, 5000);
-      }
-    }
-  };
-
   //React Query fetch data
   const result = useQuery({
     queryKey: ["blogs"],
@@ -153,7 +106,9 @@ const App = () => {
     return <div>blog service not available due to problem in server</div>;
   }
 
-  const blogs = result.data;
+  const blogs = result.data.sort((a, b) => b.likes - a.likes);
+
+  console.log("blogs: ", blogs);
 
   return (
     <div>
@@ -183,13 +138,7 @@ const App = () => {
           </Togglable>
           {/*We use Array.map to dynamically render the blogs*/}
           {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              increaseLike={increaseLike}
-              deleteBlog={deleteBlog}
-            />
+            <Blog key={blog.id} blog={blog} user={user} />
           ))}
         </div>
       )}

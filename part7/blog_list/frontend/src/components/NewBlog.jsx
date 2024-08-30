@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import blogService from "../services/blogs";
 import { useNotification } from "../context/NotificationContext";
 
 const NewBlog = () => {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
+
   const queryClient = useQueryClient();
   const { dispatch } = useNotification();
 
@@ -38,13 +43,6 @@ const NewBlog = () => {
 
   const addBlog = async (event) => {
     event.preventDefault();
-    const title = event.target.title.value;
-    const author = event.target.author.value;
-    const url = event.target.url.value;
-
-    event.target.title.value = "";
-    event.target.author.value = "";
-    event.target.url.value = "";
 
     newBlogMutation.mutate({ title, author, url });
 
@@ -56,6 +54,10 @@ const NewBlog = () => {
     setTimeout(() => {
       dispatch({ type: "HIDE_NOTIFICATION" });
     }, 5000);
+
+    setTitle("");
+    setAuthor("");
+    setUrl("");
   };
 
   const inlineStyle = {
@@ -73,6 +75,8 @@ const NewBlog = () => {
           data-testid="title-input"
           type="text"
           name="title"
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
         />
         <br />
         <label htmlFor="author">Author: </label>
@@ -81,6 +85,8 @@ const NewBlog = () => {
           data-testid="author-input"
           type="text"
           name="author"
+          value={author}
+          onChange={(event) => setAuthor(event.target.value)}
         />
         <br />
         <label htmlFor="url">URL: </label>
@@ -89,6 +95,8 @@ const NewBlog = () => {
           data-testid="url-input"
           type="text"
           name="url"
+          value={url}
+          onChange={(event) => setUrl(event.target.value)}
         />
         <br />
         <button

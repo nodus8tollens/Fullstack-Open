@@ -1,6 +1,12 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNotification } from "../context/NotificationContext";
+import blogService from "../services/blogs";
 
-const Blog = ({ blog, user, increaseLike, deleteBlog }) => {
+const Blog = ({ blog, user }) => {
+  const queryClient = useQueryClient();
+  const dispatch = useNotification();
+
   const [viewDetails, setViewDetails] = useState(false);
 
   console.log("Blog: ", blog);
@@ -20,6 +26,80 @@ const Blog = ({ blog, user, increaseLike, deleteBlog }) => {
 
   const toggleDetails = () => {
     setViewDetails(!viewDetails);
+  };
+
+  const increaseLikeMutation = useMutation({
+    mutationFn: ({ id, blog }) => blogService.updateBlog(id, blog),
+    onSuccess: (updatedBlog) => {
+      queryClient.setQueryData(["blogs"], (oldBlogs) => {
+        oldBlogs.map((blog) =>
+          blog.id === updatedBlog.id ? updatedBlog : blog,
+        );
+      });
+      queryClient.invalidateQueries(["blogs"]);
+    },
+    onError: (error) => {
+      console.log(error);
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: {
+          message: `Error liking blog: ${error.message}`,
+          error: true,
+        },
+      });
+    },
+    onSettled: () => {
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
+    },
+  });
+
+  const handleLike = (blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user ? blog.user.id : null,
+    };
+    increaseLikeMutation.mutate({ id: blog.id, blog: updatedBlog });
+  };
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: (id) => blogService.deleteBlog(id),
+    onSuccess: (_, id) => {
+      queryClient.setQueryData(["blogs"], (oldBlogs) => {
+        oldBlogs.filter((blog) => blog.id !== id);
+      });
+      queryClient.invalidateQueries(["blogs"]);
+
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: {
+          message: "Blog deleted successfully",
+          error: false,
+        },
+      });
+    },
+    onError: (error) => {
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: {
+          message: `Error deleting blog ${error.message}`,
+          error: true,
+        },
+      });
+    },
+    onSettled: () => {
+      setTimeout(() => {
+        dispatch({ type: "HIDE_NOTIFICATION" });
+      }, 5000);
+    },
+  });
+
+  const handleDelete = (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      deleteBlogMutation.mutate(blog.id);
+    }
   };
 
   return (
@@ -53,7 +133,7 @@ const Blog = ({ blog, user, increaseLike, deleteBlog }) => {
               className="like-blog-button"
               style={inlineStyle}
               data-testid="like-blog-button"
-              onClick={() => increaseLike(blog)}
+              onClick={() => handleLike(blog)}
             >
               Like
             </button>
@@ -74,7 +154,7 @@ const Blog = ({ blog, user, increaseLike, deleteBlog }) => {
                 style={inlineStyle}
                 className="delete-blog-button"
                 data-testid="delete-blog-button"
-                onClick={() => deleteBlog(blog)}
+                onClick={() => handleDelete(blog)}
               >
                 Delete
               </button>
