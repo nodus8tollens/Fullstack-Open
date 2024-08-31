@@ -25,8 +25,6 @@ const App = () => {
     }
   }, []);
 
-  //This, and similar functions, which can be written shorthand and inline, are used to set and control
-  //values of the components forms.
   const usernameChange = (event) => {
     setUsername(event.target.value);
   };
@@ -35,8 +33,6 @@ const App = () => {
     setPassword(event.target.value);
   };
 
-  //A handler function passed to the Login component that executes login, local storage, Login component state,
-  //and Notification component state functionalities
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -64,13 +60,10 @@ const App = () => {
     }
   };
 
-  //A handler function passed to the Log Out button that removes user data from local storage
-  //and handles the states of dependant components.
   const handleLogout = () => {
     try {
       window.localStorage.removeItem("loggedBlogUser");
       setUser(null);
-      setBlogs([]);
       dispatch({
         type: "SHOW_NOTIFICATION",
         payload: { message: "Logged out successfully", error: false },
@@ -92,11 +85,22 @@ const App = () => {
     }
   };
 
-  //React Query fetch data
   const result = useQuery({
     queryKey: ["blogs"],
     queryFn: blogService.getAllBlogs,
   });
+
+  if (user === null) {
+    return (
+      <Login
+        username={username}
+        password={password}
+        usernameChange={usernameChange}
+        passwordChange={passwordChange}
+        handleLogin={handleLogin}
+      />
+    );
+  }
 
   if (result.isLoading) {
     return <div>loading data...</div>;
@@ -108,41 +112,26 @@ const App = () => {
 
   const blogs = result.data.sort((a, b) => b.likes - a.likes);
 
-  console.log("blogs: ", blogs);
-
   return (
     <div>
-      {/*If the notification state is not null, the Notification component will render with the states' content */}
       {notification.message !== "" && (
         <Notification notification={notification} />
       )}
-      {/*If there is no user, the Login component will render, else the user's blogs and its accompanying components will render */}
-      {user === null ? (
-        <Login
-          username={username}
-          password={password}
-          usernameChange={usernameChange}
-          passwordChange={passwordChange}
-          handleLogin={handleLogin}
-        />
-      ) : (
-        <div>
-          <h2>Blogs</h2>
-          <p>{user.name} has logged in</p>
-          <button data-testid="logout-button" onClick={handleLogout}>
-            Log Out
-          </button>
-          <Togglable buttonLabel={{ show: "New Note", hide: "Cancel" }}>
-            {" "}
-            <NewBlog />
-          </Togglable>
-          {/*We use Array.map to dynamically render the blogs*/}
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} user={user} />
-          ))}
-        </div>
-      )}
+      <div>
+        <h2>Blogs</h2>
+        <p>{user.name} has logged in</p>
+        <button data-testid="logout-button" onClick={handleLogout}>
+          Log Out
+        </button>
+        <Togglable buttonLabel={{ show: "New Note", hide: "Cancel" }}>
+          <NewBlog />
+        </Togglable>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} user={user} />
+        ))}
+      </div>
     </div>
   );
 };
+
 export default App;
