@@ -9,8 +9,6 @@ const Blog = ({ blog, user }) => {
 
   const [viewDetails, setViewDetails] = useState(false);
 
-  console.log("Blog: ", blog);
-
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -39,7 +37,6 @@ const Blog = ({ blog, user }) => {
       queryClient.invalidateQueries(["blogs"]);
     },
     onError: (error) => {
-      console.log(error);
       dispatch({
         type: "SHOW_NOTIFICATION",
         payload: {

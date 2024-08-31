@@ -17,7 +17,6 @@ const NewBlog = () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
 
       const blogs = queryClient.getQueryData(["blogs"]);
-      console.log("blogs: ", blogs);
       queryClient.setQueryData("blogs", blogs.concat(newBlog));
       dispatch({
         type: "SHOW_NOTIFICATION",
@@ -25,7 +24,6 @@ const NewBlog = () => {
       });
     },
     onError: (error) => {
-      console.log(error);
       dispatch({
         type: "SHOW_NOTIFICATION",
         payload: {

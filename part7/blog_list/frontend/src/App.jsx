@@ -5,74 +5,37 @@ import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 import { useNotification } from "./context/NotificationContext";
 import { useQuery } from "@tanstack/react-query";
+import { useUser } from "./context/UserContext";
 
 const App = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-
-  const { state: notification, dispatch } = useNotification();
+  const { state: userState, dispatch: userDispatch } = useUser();
+  const { state: notification, dispatch: notificationDispatch } =
+    useNotification();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogUser");
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
-      setUser(loggedUser);
+      userDispatch({ type: "USER_LOGIN", payload: loggedUser });
       blogService.setToken(loggedUser.token);
     }
-  }, []);
-
-  const usernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const passwordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-      dispatch({
-        type: "SHOW_NOTIFICATION",
-        payload: { message: "Login successful", error: false },
-      });
-      setTimeout(() => {
-        dispatch({ type: "HIDE_NOTIFICATION" });
-      }, 5000);
-    } catch (error) {
-      dispatch({
-        type: "SHOW_NOTIFICATION",
-        payload: { message: `Error logging in: ${error}`, error: true },
-      });
-      setTimeout(() => {
-        dispatch({ type: "HIDE_NOTIFICATION" });
-      }, 5000);
-    }
-  };
+  }, [userDispatch]);
 
   const handleLogout = () => {
     try {
       window.localStorage.removeItem("loggedBlogUser");
-      setUser(null);
-      dispatch({
+      userDispatch({ type: "USER_LOGOUT" });
+      notificationDispatch({
         type: "SHOW_NOTIFICATION",
         payload: { message: "Logged out successfully", error: false },
       });
       setTimeout(() => {
-        dispatch({ type: "HIDE_NOTIFICATION" });
+        notificationDispatch({ type: "HIDE_NOTIFICATION" });
       }, 5000);
     } catch (error) {
-      dispatch({
+      notificationDispatch({
         type: "SHOW_NOTIFICATION",
         payload: {
           message: `Error logging out: ${error}`,
@@ -80,7 +43,7 @@ const App = () => {
         },
       });
       setTimeout(() => {
-        dispatch({ type: "HIDE_NOTIFICATION" });
+        notificationDispatch({ type: "HIDE_NOTIFICATION" });
       }, 5000);
     }
   };
@@ -90,16 +53,8 @@ const App = () => {
     queryFn: blogService.getAllBlogs,
   });
 
-  if (user === null) {
-    return (
-      <Login
-        username={username}
-        password={password}
-        usernameChange={usernameChange}
-        passwordChange={passwordChange}
-        handleLogin={handleLogin}
-      />
-    );
+  if (userState.user === null) {
+    return <Login />;
   }
 
   if (result.isLoading) {
@@ -119,7 +74,7 @@ const App = () => {
       )}
       <div>
         <h2>Blogs</h2>
-        <p>{user.name} has logged in</p>
+        <p>{userState.user.name} has logged in</p>
         <button data-testid="logout-button" onClick={handleLogout}>
           Log Out
         </button>
@@ -127,7 +82,7 @@ const App = () => {
           <NewBlog />
         </Togglable>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} user={user} />
+          <Blog key={blog.id} blog={blog} user={userState.user} />
         ))}
       </div>
     </div>

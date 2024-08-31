@@ -1,12 +1,46 @@
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+import loginService from "../services/login";
+import { useUser } from "../context/UserContext";
+import { useNotification } from "../context/NotificationContext";
 
-const Login = ({
-  username,
-  password,
-  usernameChange,
-  passwordChange,
-  handleLogin,
-}) => {
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const { dispatch: userDispatch } = useUser();
+  const { dispatch: notificationDispatch } = useNotification();
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      const user = await loginService.login({ username, password });
+      window.localStorage.setItem("loggedBlogUser", JSON.stringify(user));
+      userDispatch({ type: "USER_LOGIN", payload: user });
+      setUsername("");
+      setPassword("");
+      notificationDispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: "Login successful", error: false },
+      });
+      setTimeout(() => {
+        notificationDispatch({
+          type: "HIDE_NOTIFICATION",
+        });
+      }, 5000);
+    } catch (error) {
+      notificationDispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: { message: `Error logging in: ${error.message}`, error: true },
+      });
+      setTimeout(() => {
+        notificationDispatch({
+          type: "HIDE_NOTIFICATION",
+        });
+      }, 5000);
+    }
+  };
+
   return (
     <>
       <h3>Log In:</h3>
@@ -17,7 +51,9 @@ const Login = ({
           type="text"
           placeholder="John Doe"
           value={username}
-          onChange={usernameChange}
+          onChange={(event) => {
+            setUsername(event.target.value);
+          }}
         />
         <br />
         <label htmlFor="Password">Password: </label>
@@ -26,7 +62,9 @@ const Login = ({
           type="password"
           placeholder="Password"
           value={password}
-          onChange={passwordChange}
+          onChange={(event) => {
+            setPassword(event.target.value);
+          }}
         />
         <br />
         <button data-testid="login-submit" type="submit">
@@ -35,14 +73,6 @@ const Login = ({
       </form>
     </>
   );
-};
-
-Login.PropTypes = {
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
-  usernameChange: PropTypes.func.isRequired,
-  passwordChange: PropTypes.func.isRequired,
-  handleLogin: PropTypes.func.isRequired,
 };
 
 export default Login;
