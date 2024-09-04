@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
+import { useEffect } from "react";
 import Login from "./components/Login";
-import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
-import Togglable from "./components/Togglable";
+import Users from "./components/Users";
+import Blogs from "./components/Blogs";
 import blogService from "./services/blogs";
 import { useNotification } from "./context/NotificationContext";
-import { useQuery } from "@tanstack/react-query";
 import { useUser } from "./context/UserContext";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 const App = () => {
   const { state: userState, dispatch: userDispatch } = useUser();
@@ -48,44 +47,28 @@ const App = () => {
     }
   };
 
-  const result = useQuery({
-    queryKey: ["blogs"],
-    queryFn: blogService.getAllBlogs,
-  });
-
   if (userState.user === null) {
     return <Login />;
   }
 
-  if (result.isLoading) {
-    return <div>loading data...</div>;
-  }
-
-  if (result.isError) {
-    return <div>blog service not available due to problem in server</div>;
-  }
-
-  const blogs = result.data.sort((a, b) => b.likes - a.likes);
-
   return (
-    <div>
-      {notification.message !== "" && (
-        <Notification notification={notification} />
-      )}
+    <Router>
       <div>
+        {notification.message !== "" && (
+          <Notification notification={notification} />
+        )}
         <h2>Blogs</h2>
         <p>{userState.user.name} has logged in</p>
         <button data-testid="logout-button" onClick={handleLogout}>
           Log Out
         </button>
-        <Togglable buttonLabel={{ show: "New Note", hide: "Cancel" }}>
-          <NewBlog />
-        </Togglable>
-        {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} user={userState.user} />
-        ))}
+
+        <Routes>
+          <Route path="/" element={<Blogs />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 };
 
