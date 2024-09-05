@@ -14,6 +14,19 @@ blogRouter.get("/", async (request, response) => {
   }
 });
 
+blogRouter.get("/user/:id", async (request, response) => {
+  try {
+    const userId = request.params.id;
+    const blogPosts = await BlogPost.find({ user: userId }).populate("user", {
+      username: 1,
+      name: 1,
+    });
+    response.json(blogPosts);
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+});
+
 blogRouter.get("/:id", async (request, response) => {
   try {
     const id = request.params.id;
