@@ -8,11 +8,11 @@ import { UserProvider } from "./context/UserContext";
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <NotificationProvider>
+  <NotificationProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
         <App />
-      </NotificationProvider>
-    </UserProvider>
-  </QueryClientProvider>,
+      </UserProvider>
+    </QueryClientProvider>
+  </NotificationProvider>,
 );

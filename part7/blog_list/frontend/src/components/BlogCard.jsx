@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "../context/NotificationContext";
 import blogService from "../services/blogs";
+import { useParams } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
-const Blog = ({ blog, user }) => {
+const Blog = () => {
+  const id = useParams().id;
   const queryClient = useQueryClient();
-  const dispatch = useNotification();
-
-  const [viewDetails, setViewDetails] = useState(false);
+  const { state: notification, dispatch: dispatch } = useNotification();
+  const { state: userState } = useUser();
 
   const blogStyle = {
     paddingTop: 10,
@@ -22,21 +24,50 @@ const Blog = ({ blog, user }) => {
     marginRight: 10,
   };
 
-  const toggleDetails = () => {
-    setViewDetails(!viewDetails);
-  };
+  const {
+    data: blog,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["blog", id],
+    queryFn: () => blogService.getBlogById(id),
+    onError: (error) => {
+      dispatch({
+        type: "SHOW_NOTIFICATION",
+        payload: {
+          message: `Error fetching blog: ${error.message}`,
+          error: true,
+        },
+      });
+    },
+  });
+
+  const [blogLikes, setBlogLikes] = useState(0);
+
+  useEffect(() => {
+    if (blog) {
+      setBlogLikes(blog.likes);
+    }
+  }, [blog]);
 
   const increaseLikeMutation = useMutation({
     mutationFn: ({ id, blog }) => blogService.updateBlog(id, blog),
     onSuccess: (updatedBlog) => {
-      queryClient.setQueryData(["blogs"], (oldBlogs) => {
-        oldBlogs.map((blog) =>
-          blog.id === updatedBlog.id ? updatedBlog : blog,
-        );
-      });
-      queryClient.invalidateQueries(["blogs"]);
+      const oldBlogs = queryClient.getQueryData(["blogs"]);
+
+      if (oldBlogs) {
+        queryClient.setQueryData(["blogs"], (oldBlogs) => {
+          return oldBlogs.map((blog) =>
+            blog.id === updatedBlog.id ? updatedBlog : blog,
+          );
+        });
+      }
+
+      queryClient.invalidateQueries(["blog", id]);
     },
     onError: (error) => {
+      console.log(error);
       dispatch({
         type: "SHOW_NOTIFICATION",
         payload: {
@@ -52,12 +83,16 @@ const Blog = ({ blog, user }) => {
     },
   });
 
-  const handleLike = (blog) => {
+  const handleLike = () => {
+    if (!blog) return;
+
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
       user: blog.user ? blog.user.id : null,
     };
+
+    setBlogLikes(updatedBlog.likes);
     increaseLikeMutation.mutate({ id: blog.id, blog: updatedBlog });
   };
 
@@ -65,10 +100,9 @@ const Blog = ({ blog, user }) => {
     mutationFn: (id) => blogService.deleteBlog(id),
     onSuccess: (_, id) => {
       queryClient.setQueryData(["blogs"], (oldBlogs) => {
-        oldBlogs.filter((blog) => blog.id !== id);
+        return oldBlogs.filter((blog) => blog.id !== id);
       });
       queryClient.invalidateQueries(["blogs"]);
-
       dispatch({
         type: "SHOW_NOTIFICATION",
         payload: {
@@ -78,10 +112,11 @@ const Blog = ({ blog, user }) => {
       });
     },
     onError: (error) => {
+      console.log(error);
       dispatch({
         type: "SHOW_NOTIFICATION",
         payload: {
-          message: `Error deleting blog ${error.message}`,
+          message: `Error deleting blog: ${error.message}`,
           error: true,
         },
       });
@@ -93,71 +128,27 @@ const Blog = ({ blog, user }) => {
     },
   });
 
-  const handleDelete = (blog) => {
+  const handleDelete = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
       deleteBlogMutation.mutate(blog.id);
     }
   };
 
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
+
   return (
-    <div style={blogStyle} className="blog-container">
-      {!viewDetails ? (
-        <div className="blog-summary">
-          <div className="blog-title">Title: {blog.title}</div>
-          <div className="blog-author">Author: {blog.author}</div>
-          <button
-            className="view-details-button"
-            data-testid="view-details-button"
-            onClick={toggleDetails}
-          >
-            View
-          </button>
-        </div>
-      ) : (
-        <div className="blog-details">
-          <div className="blog-title">Title: {blog.title}</div>
-          <div className="blog-author">Author: {blog.author}</div>
-          <div className="blog-url">URL: {blog.url}</div>
-          <div>
-            <div
-              className="blog-likes"
-              data-testid="blog-likes"
-              style={inlineStyle}
-            >
-              Likes: {blog.likes}
-            </div>
-            <button
-              className="like-blog-button"
-              style={inlineStyle}
-              data-testid="like-blog-button"
-              onClick={() => handleLike(blog)}
-            >
-              Like
-            </button>
-          </div>
-          <div className="blog-user">
-            User: {blog.user && blog.user.name ? blog.user.name : ""}
-          </div>
-          <div>
-            <button
-              className="hide-details-button"
-              onClick={toggleDetails}
-              style={inlineStyle}
-            >
-              Hide
-            </button>
-            {blog.user && blog.user.username === user.username && (
-              <button
-                style={inlineStyle}
-                className="delete-blog-button"
-                data-testid="delete-blog-button"
-                onClick={() => handleDelete(blog)}
-              >
-                Delete
-              </button>
-            )}
-          </div>
-        </div>
+    <div className="blog-card">
+      <h2>{blog.title}</h2>
+      <p>
+        {" "}
+        <a href={blog.url}>{blog.url} </a>{" "}
+      </p>
+      <p>Likes: {blogLikes}</p>
+      <p>Added by: {blog.user ? blog.user.name : ""}</p>
+      <button onClick={handleLike}>Like</button>
+      {blog.user && userState.user?.username === blog.user.username && (
+        <button onClick={handleDelete}>Delete</button>
       )}
     </div>
   );
