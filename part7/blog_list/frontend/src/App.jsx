@@ -5,6 +5,7 @@ import Users from "./components/Users";
 import Blogs from "./components/Blogs";
 import BlogList from "./components/BlogList";
 import BlogCard from "./components/BlogCard";
+import Navigation from "./components/Navigation";
 import blogService from "./services/blogs";
 import { useNotification } from "./context/NotificationContext";
 import { useUser } from "./context/UserContext";
@@ -56,14 +57,12 @@ const App = () => {
   return (
     <Router>
       <div>
+        <Navigation userState={userState} handleLogout={handleLogout} />
+        <h2>Blog App</h2>
+
         {notification.message !== "" && (
           <Notification notification={notification} />
         )}
-        <h2>Blogs</h2>
-        <p>{userState.user.name} has logged in</p>
-        <button data-testid="logout-button" onClick={handleLogout}>
-          Log Out
-        </button>
 
         <Routes>
           <Route path="/" element={<Blogs />} />
