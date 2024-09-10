@@ -4,6 +4,7 @@ import { useNotification } from "../context/NotificationContext";
 import blogService from "../services/blogs";
 import { useParams } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import Comments from "./Comments";
 
 const Blog = () => {
   const id = useParams().id;
@@ -150,6 +151,7 @@ const Blog = () => {
       {blog.user && userState.user?.username === blog.user.username && (
         <button onClick={handleDelete}>Delete</button>
       )}
+      <Comments blog={blog} />
     </div>
   );
 };

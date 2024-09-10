@@ -9,7 +9,7 @@ import Navigation from "./components/Navigation";
 import blogService from "./services/blogs";
 import { useNotification } from "./context/NotificationContext";
 import { useUser } from "./context/UserContext";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
   const { state: userState, dispatch: userDispatch } = useUser();

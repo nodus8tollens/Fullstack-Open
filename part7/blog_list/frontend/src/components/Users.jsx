@@ -1,8 +1,7 @@
 import React from "react";
 import userService from "../services/users";
 import { useQuery } from "@tanstack/react-query";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import BlogList from "./BlogList";
+import { Link } from "react-router-dom";
 
 const Users = () => {
   const {

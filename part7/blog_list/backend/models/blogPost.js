@@ -15,6 +15,9 @@ const blogPostSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  comments: {
+    type: mongoose.Schema.Types.Array,
+  },
 });
 
 //Converts the blogPost schema toa more desirable API-appropriate format.
