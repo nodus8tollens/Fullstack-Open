@@ -56,7 +56,7 @@ const App = () => {
 
   return (
     <Router>
-      <div>
+      <div className="container">
         <Navigation userState={userState} handleLogout={handleLogout} />
         <h2>Blog App</h2>
 

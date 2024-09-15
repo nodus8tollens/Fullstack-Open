@@ -52,8 +52,8 @@ const Comments = ({ blog }) => {
       <h3>Comments:</h3>
 
       <form onSubmit={handleComment}>
-        <label htmlFor="comment">Add comment: </label>
         <input
+          placeholder="Add a comment..."
           type="text"
           name="comment"
           value={comment}

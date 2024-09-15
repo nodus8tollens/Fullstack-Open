@@ -42,7 +42,6 @@ const Blogs = () => {
             {blog.title}{" "}
           </Link>
         </div>
-        // <BlogCard key={blog.id} blog={blog} user={userState.user} />
       ))}
     </div>
   );

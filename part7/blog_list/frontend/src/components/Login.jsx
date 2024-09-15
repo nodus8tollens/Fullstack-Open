@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import loginService from "../services/login";
 import { useUser } from "../context/UserContext";
 import { useNotification } from "../context/NotificationContext";
+import { Form, Button } from "react-bootstrap";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -44,33 +45,37 @@ const Login = () => {
   return (
     <>
       <h3>Log In:</h3>
-      <form onSubmit={handleLogin} data-testid="login-form">
-        <label htmlFor="Username">Username: </label>
-        <input
-          data-testid="login-username"
-          type="text"
-          placeholder="John Doe"
-          value={username}
-          onChange={(event) => {
-            setUsername(event.target.value);
-          }}
-        />
-        <br />
-        <label htmlFor="Password">Password: </label>
-        <input
-          data-testid="login-password"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(event) => {
-            setPassword(event.target.value);
-          }}
-        />
-        <br />
-        <button data-testid="login-submit" type="submit">
+      <Form onSubmit={handleLogin} data-testid="login-form">
+        <Form.Group>
+          <Form.Label htmlFor="Username">Username: </Form.Label>
+          <Form.Control
+            data-testid="login-username"
+            type="text"
+            placeholder="John Doe"
+            value={username}
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+          />
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label htmlFor="Password">Password: </Form.Label>
+          <Form.Control
+            data-testid="login-password"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          />
+        </Form.Group>
+
+        <Button variant="primary" data-testid="login-submit" type="submit">
           login
-        </button>
-      </form>
+        </Button>
+      </Form>
     </>
   );
 };

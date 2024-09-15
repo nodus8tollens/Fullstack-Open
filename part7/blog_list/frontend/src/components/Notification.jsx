@@ -1,4 +1,5 @@
 import "./Notification.css";
+import { Alert } from "react-bootstrap";
 
 const Notification = ({ notification }) => {
   if (!notification) return null;
@@ -7,10 +8,10 @@ const Notification = ({ notification }) => {
   const className = notification.error ? "error" : "notification";
 
   return (
-    <h3 className={className}>
+    <Alert className={className}>
       {notification.error ? "Error: " : "Notification: "}
       {notification.message}
-    </h3>
+    </Alert>
   );
 };
 

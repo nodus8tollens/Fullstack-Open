@@ -58,17 +58,12 @@ const NewBlog = () => {
     setUrl("");
   };
 
-  const inlineStyle = {
-    display: "inline-block",
-    marginRight: 10,
-  };
-
   return (
     <>
       <h3>Create New: </h3>
       <form onSubmit={addBlog}>
-        <label htmlFor="title">Title: </label>
         <input
+          placeholder="Title"
           className="title-input"
           data-testid="title-input"
           type="text"
@@ -77,8 +72,8 @@ const NewBlog = () => {
           onChange={(event) => setTitle(event.target.value)}
         />
         <br />
-        <label htmlFor="author">Author: </label>
         <input
+          placeholder="Author"
           className="author-input"
           data-testid="author-input"
           type="text"
@@ -87,8 +82,8 @@ const NewBlog = () => {
           onChange={(event) => setAuthor(event.target.value)}
         />
         <br />
-        <label htmlFor="url">URL: </label>
         <input
+          placeholder="URL"
           className="url-input"
           data-testid="url-input"
           type="text"
@@ -98,7 +93,6 @@ const NewBlog = () => {
         />
         <br />
         <button
-          style={inlineStyle}
           data-testid="create-blog-button"
           className="create-blog-button"
           type="submit"

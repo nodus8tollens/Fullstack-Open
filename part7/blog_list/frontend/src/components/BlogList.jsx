@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useParams } from "react-router-dom";
 import blogService from "../services/blogs";
+import { Table } from "react-bootstrap";
 
 const BlogList = () => {
   const { id } = useParams();
@@ -21,8 +22,6 @@ const BlogList = () => {
   }
 
   const blogs = result.data;
-
-  console.log("from BlogList component", blogs);
 
   return (
     <div>
