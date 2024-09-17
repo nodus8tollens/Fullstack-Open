@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries";
+import { v4 as uuidv4 } from "uuid";
 
 const Books = (props) => {
   const result = useQuery(ALL_BOOKS);
@@ -22,7 +23,7 @@ const Books = (props) => {
             <th>published</th>
           </tr>
           {books.map((a) => (
-            <tr key={a.title}>
+            <tr key={uuidv4()}>
               <td>{a.title}</td>
               <td>{a.author}</td>
               <td>{a.published}</td>
