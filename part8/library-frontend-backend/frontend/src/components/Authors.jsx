@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ALL_AUTHORS } from "../queries";
 import { v4 as uuidv4 } from "uuid";
 import { EDIT_AUTHOR } from "../queries";
+import Select from "react-select";
 
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS);
@@ -24,10 +25,19 @@ const Authors = (props) => {
 
   const authors = result.data.allAuthors;
 
+  const authorOptions = authors.map((author) => ({
+    value: author.name,
+    label: author.name,
+  }));
+
+  console.log(authorOptions);
+
   const formStyle = {
     display: "flex",
     flexDirection: "column",
     gap: "10px",
+    maxWidth: "30%",
+    padding: "20px",
   };
 
   const fieldsetStyle = {
@@ -46,7 +56,6 @@ const Authors = (props) => {
       await editAuthor({
         variables: { name, setBornTo: Number(year) },
       });
-      setName("");
       setYear("");
     } catch (error) {
       console.error("Error updating author:", error);
@@ -76,12 +85,10 @@ const Authors = (props) => {
       <form onSubmit={submit} style={formStyle}>
         <fieldset style={fieldsetStyle}>
           <label htmlFor="name">name</label>
-          <input
-            name="name"
-            type="text"
-            onChange={({ target }) => {
-              setName(target.value);
-            }}
+          <Select
+            options={authorOptions}
+            onChange={(selectedOption) => setName(selectedOption.value)}
+            value={authorOptions.find((option) => option.value === name)}
           />
         </fieldset>
         <fieldset style={fieldsetStyle}>
@@ -90,6 +97,7 @@ const Authors = (props) => {
             name="year"
             type="number"
             onChange={({ target }) => setYear(target.value)}
+            value={year}
           />
         </fieldset>
 
